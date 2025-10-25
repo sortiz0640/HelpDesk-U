@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class Usuario {
 
-    private String id; // Formato "US-0000"
     private String nombre;
     private String apellidos;
     private String correo;
@@ -14,7 +13,6 @@ public class Usuario {
     private ListaRoles rol;
 
     public Usuario(String nombre, String apellidos, String correo, String password) {
-        this.id = generarId();
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.correo = correo;
@@ -58,19 +56,10 @@ public class Usuario {
         this.rol = rol;
     }
 
-    public String getId() {
-        return id;
-    }
 
-    // Función generada por IA para la creación de id's totalmente aleatorios y no repetibles
-    private String generarId() {
-        long timestamp = System.currentTimeMillis() % 100000; // últimos 5 dígitos del tiempo
-        int randomPart = new Random().nextInt(90) + 10; // 2 dígitos aleatorios
-        return "US-" + timestamp + randomPart;
-    }
 
     @Override
     public String toString() {
-        return "[Nombre: " + getNombre() + " "+ getApellidos() +"][" + getId() + "][Correo: " + getCorreo() + "]" +"[ "+ getRol() +"]";
+        return "[Nombre: " + getNombre() + " "+ getApellidos() +"][Correo: " + getCorreo() + "]" +"[ "+ getRol() +"]";
     }
 }
