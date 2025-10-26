@@ -11,14 +11,15 @@ public class DataTicket {
         tickets = new ArrayList<>();
     }
 
-    // regresa true si el ticket se agrega correctamente
-    public boolean agregar(Ticket ticket) {
-        return tickets.add(ticket);
+    // agrega ticket a un arreglo de tickets
+    public void agregar(Ticket ticket) {
+        tickets.add(ticket);
     }
 
     // regresa true si el ticket se elimina correctamente
-    public boolean eliminar(Ticket ticket) {
-        return tickets.remove(ticket);
+    public boolean eliminarPorId(String id) {
+
+        return tickets.removeIf(ticket -> ticket.getId().equals(id));
     }
 
     // Regresa un arreglo de objetos tipo String, siendo cada objeto el toString de cada ticket

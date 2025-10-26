@@ -1,6 +1,7 @@
 package cr.ac.ucenfotec.sortiz0640.bl.logic;
 
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
+import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
 import cr.ac.ucenfotec.sortiz0640.dl.DataDepartamento;
 
 import java.util.ArrayList;
@@ -18,15 +19,15 @@ public class GestorDepartamento {
         Departamento tmpDepartamento = new Departamento(nombre, descripcion, correo);
         boolean res = db.agregar(tmpDepartamento);
         if (!res) {
-            return "Error al agregar departamento";
+            return "El correo/nombre del departamento ya se encuentra registrado";
         }
         return "Departamento agregado correctamente";
 
     }
 
-    public String eliminarPorNombre(String nombre) {
+    public String eliminarPorCorreo(String correo) {
 
-        boolean res = db.eliminarPorNombre(nombre);
+        boolean res = db.eliminarPorCorreo(correo);
         if (!res) {
             return "El departamento especificado no existe";
         }
@@ -34,10 +35,30 @@ public class GestorDepartamento {
 
     }
 
+    public boolean existePorCorreo(String correo) {
+
+        boolean res = db.existePorCorreo(correo);
+        if (!res) {
+            return false;
+        }
+        return res;
+
+    }
+
+    public String listarPorCorreo(String correo) {
+
+        String res = db.listarPorCorreo(correo);
+        if (res == null) {
+            return "El departamento especificado no existe";
+        }
+        return res;
+    }
+
     public ArrayList<String> getDepartamentos() {
         return db.getDepartamentos();
     }
 
-
-
+    public void agregarTicket(Ticket ticket, String correo) {
+        db.agregarTicket(ticket, correo);
+    }
 }

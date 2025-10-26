@@ -14,7 +14,7 @@ public class ViewUsuario {
         interfaz.imprimirMensaje("[2] Eliminar");
         interfaz.imprimirMensaje("[3] Listar por Correo ");
         interfaz.imprimirMensaje("[4] Listar Todos");
-        interfaz.imprimirMensaje("[5] Regresar");
-        interfaz.imprimirMensaje("===================================");
+        interfaz.imprimirMensaje("[0] Regresar");
+        interfaz.imprimirMensaje("===================================\n");
     }
 }

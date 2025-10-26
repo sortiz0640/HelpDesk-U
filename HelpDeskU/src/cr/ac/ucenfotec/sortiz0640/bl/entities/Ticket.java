@@ -9,8 +9,9 @@ public class Ticket {
     private String asunto;
     private String descripcion;
     private EstadoTicket estado;
+    private String correoDepartamento;
 
-    public Ticket(String asunto, String descripcion) {
+    public Ticket(String asunto, String descripcion, String correoDepartamento) {
         this.asunto = asunto;
         this.descripcion = descripcion;
         this.estado = EstadoTicket.NUEVO; // todos los tickets se crean por default con el estado NUEVO

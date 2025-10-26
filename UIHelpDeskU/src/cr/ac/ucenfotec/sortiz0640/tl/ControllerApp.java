@@ -1,9 +1,5 @@
 package cr.ac.ucenfotec.sortiz0640.tl;
-
 import cr.ac.ucenfotec.sortiz0640.ui.ViewApp;
-import cr.ac.ucenfotec.sortiz0640.ui.ViewDepartamento;
-import cr.ac.ucenfotec.sortiz0640.ui.ViewTicket;
-import cr.ac.ucenfotec.sortiz0640.ui.ViewUsuario;
 import cr.ac.ucenfotec.sortiz0640.util.UI;
 
 import java.io.IOException;
@@ -28,9 +24,9 @@ public class ControllerApp {
 
     public void procesarOpcion(int opcion) throws IOException {
         switch (opcion) {
-            case 1: usuario.start();
-            case 2: departamento.start();
-            case 3: ticket.start();
+            case 1: usuario.start(); break;
+            case 2: departamento.start(); break;
+            case 3: ticket.start(); break;
             default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n");
         }
     }

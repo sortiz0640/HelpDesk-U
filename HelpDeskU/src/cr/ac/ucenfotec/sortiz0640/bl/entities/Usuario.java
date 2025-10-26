@@ -12,12 +12,12 @@ public class Usuario {
     private String password;
     private ListaRoles rol;
 
-    public Usuario(String nombre, String apellidos, String correo, String password) {
+    public Usuario(String nombre, String apellidos, String correo, String password, ListaRoles rol) {
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.correo = correo;
         this.password = password;
-
+        this.rol = rol;
     }
 
     public String getNombre() {
@@ -57,9 +57,8 @@ public class Usuario {
     }
 
 
-
     @Override
     public String toString() {
-        return "[Nombre: " + getNombre() + " "+ getApellidos() +"][Correo: " + getCorreo() + "]" +"[ "+ getRol() +"]";
+        return "[Nombre: " + getNombre() + " "+ getApellidos() +"][Correo: " + getCorreo() + "]" +"["+ getRol() +"]";
     }
 }
