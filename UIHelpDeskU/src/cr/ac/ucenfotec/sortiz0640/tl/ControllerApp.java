@@ -10,9 +10,17 @@ public class ControllerApp {
     private UI interfaz = new UI(); // Clase de métodos para lectura y escritura en consola
     private ViewApp app = new ViewApp();
 
-    private ControllerUsuario usuario = new ControllerUsuario();
-    private ControllerTicket ticket = new ControllerTicket();
-    private ControllerDepartamento departamento = new ControllerDepartamento();
+    private ControllerUsuario usuario;
+    private ControllerTicket ticket;
+    private ControllerDepartamento departamento;
+    private GestorSesion sesion;
+
+    public ControllerApp(ControllerUsuario usuario, ControllerTicket ticket, ControllerDepartamento departamento, GestorSesion sesion)  {
+        this.usuario = usuario;
+        this.ticket = ticket;
+        this.departamento = departamento;
+        this.sesion = sesion;
+    }
 
     public void start() throws IOException {
         int opcion = -1;
@@ -28,7 +36,7 @@ public class ControllerApp {
             case 1: usuario.start(); break;
             case 2: departamento.start(); break;
             case 3: ticket.start(); break;
-            case 0: GestorSesion.cerrarSesion(); break;
+            case 0: sesion.cerrarSesion(); break;
             default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n");
         }
     }

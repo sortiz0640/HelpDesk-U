@@ -39,4 +39,69 @@ public class Validations {
 
         return password;
     }
+
+    public String nombre() throws IOException {
+
+        String nombre;
+
+        do {
+
+            interfaz.imprimirMensaje("Ingrese su nombre: ");
+            nombre = interfaz.leerTexto();
+
+            if (nombre == null ||  nombre.isBlank()) {
+                interfaz.imprimirMensaje("El nombre no puede estar vacio. ");
+            }
+
+        } while (nombre == null ||  nombre.isBlank());
+
+        return nombre;
+    }
+
+    public int rol() throws IOException {
+        int rol;
+        do {
+
+            interfaz.imprimirMensaje("Seleccione un rol [1 = ADMIN ] [2 = ESTUDIANTE ] [3 = FUNCIONARIO ]  ");
+            rol = interfaz.leerOpcion();
+
+            if (rol < 1 || rol > 3) {
+                interfaz.imprimirMensaje("Opción invalida. Intente nuevamente ");
+            }
+        } while (rol < 1 || rol > 3);
+        return rol;
+    }
+
+    public String descripcion() throws IOException {
+        String descripcion = "";
+
+        do {
+            interfaz.imprimirMensaje("Ingrese la descripción: ");
+            descripcion = interfaz.leerTexto();
+
+            if (descripcion == null ||  descripcion.isBlank()) {
+                interfaz.imprimirMensaje("El nombre no puede estar vacio. ");
+            }
+
+        } while (descripcion == null ||  descripcion.isBlank());
+        return descripcion;
+    }
+
+    public String asunto() throws IOException {
+        String asunto = "";
+
+        do {
+            interfaz.imprimirMensaje("Ingrese ela asunto: ");
+            asunto = interfaz.leerTexto();
+
+            if (asunto == null ||  asunto.isBlank()) {
+                interfaz.imprimirMensaje("El nombre no puede estar vacio. ");
+            }
+
+        } while (asunto == null ||  asunto.isBlank());
+
+        return asunto;
+    }
+
+
 }

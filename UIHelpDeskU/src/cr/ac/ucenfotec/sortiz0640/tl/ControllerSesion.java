@@ -10,6 +10,13 @@ public class ControllerSesion {
     private UI interfaz = new UI(); // Clase de métodos para lectura y escritura en consola
     private ViewSesion app = new ViewSesion();
     private Validations validator = new Validations();
+    private GestorSesion sesion;
+    private ControllerApp controllerApp;
+
+    public ControllerSesion(GestorSesion sesion, ControllerApp controllerApp) {
+        this.sesion = sesion;
+        this.controllerApp = controllerApp;
+    }
 
     public void start() throws IOException {
         int opcion = -1;
@@ -23,6 +30,7 @@ public class ControllerSesion {
     public void procesarOpcion(int opcion) throws IOException {
         switch (opcion) {
             case 1: iniciarSesion(); break;
+            case 0: break;
             default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n"); break;
         }
     }
@@ -32,7 +40,7 @@ public class ControllerSesion {
         String correo = validator.correo();
         String password = validator.password();
 
-        boolean estado = GestorSesion.iniciarSesion(correo, password);
+        boolean estado = sesion.iniciarSesion(correo, password);
 
         if (!estado) {
             interfaz.imprimirMensaje("El usuario o la contrasena no son correctos. Intente nuevamente");
@@ -42,9 +50,6 @@ public class ControllerSesion {
         interfaz.imprimirMensaje("Sesion iniciada correctamente");
 
         // Arranca el menu principal
-
-        ControllerApp app = new ControllerApp();
-        app.start();
-
+        controllerApp.start();
     }
 }

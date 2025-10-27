@@ -5,14 +5,14 @@ import java.io.IOException;
 
 public class GestorSesion {
 
-    private static Usuario usuario;
-    private static GestorUsuario gestorUsuario;
+    private Usuario usuario;
+    private GestorUsuario gestorUsuario;
 
     public GestorSesion(GestorUsuario gestor) {
         gestorUsuario = gestor;
     }
 
-    public static boolean iniciarSesion(String correo, String password) {
+    public boolean iniciarSesion(String correo, String password) {
 
         for(Usuario u : gestorUsuario.getUsuarios()) {
 
@@ -25,21 +25,21 @@ public class GestorSesion {
         return  false;
     }
 
-    public static void cerrarSesion() throws IOException {
+    public void cerrarSesion() throws IOException {
         if (usuario != null) {
             usuario = null;
         }
     }
 
-    public static Usuario getUsuario() {
+    public Usuario getUsuario() {
         return usuario;
     }
 
-    public static boolean isSesionActiva() {
+    public boolean isSesionActiva() {
         return usuario != null;
     }
 
-    public static boolean tienePermisosAdmin() {
+    public boolean tienePermisosAdmin() {
         if (!isSesionActiva()) { return false; }
         return usuario.getRol() == ListaRoles.ADMIN;
     }

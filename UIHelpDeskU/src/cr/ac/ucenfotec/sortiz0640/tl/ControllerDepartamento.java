@@ -1,9 +1,9 @@
 package cr.ac.ucenfotec.sortiz0640.tl;
 import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorDepartamento;
+import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorSesion;
 import cr.ac.ucenfotec.sortiz0640.ui.ViewDepartamento;
 import cr.ac.ucenfotec.sortiz0640.util.UI;
-import org.apache.commons.validator.routines.EmailValidator;
-
+import cr.ac.ucenfotec.sortiz0640.util.Validations;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -11,9 +11,14 @@ public class ControllerDepartamento {
 
     private UI interfaz = new UI(); // Clase de métodos para lectura y escritura en consola
     private ViewDepartamento app = new ViewDepartamento();
-    private GestorDepartamento g = new GestorDepartamento();
-    EmailValidator validator = EmailValidator.getInstance();
+    private GestorDepartamento g;
+    private GestorSesion sesion;
+    private Validations validator = new Validations();
 
+    public ControllerDepartamento(GestorDepartamento g, GestorSesion sesion) {
+        this.g = g;
+        this.sesion = sesion;
+    }
 
     public void start() throws IOException {
         int opcion = -1;
@@ -30,46 +35,16 @@ public class ControllerDepartamento {
             case 2: eliminarPorCorreo(); break;
             case 3: listarPorCorreo(); break;
             case 4: listarTodos(); break;
+            case 0: break;
             default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n");
         }
     }
 
     public void registrar() throws IOException {
 
-        String nombre;
-        String descripcion;
-        String correo;
-
-        do {
-
-            interfaz.imprimirMensaje("Ingrese el nombre del departamento: ");
-            nombre = interfaz.leerTexto();
-
-            if (nombre == null ||  nombre.isBlank()) {
-                interfaz.imprimirMensaje("El nombre no puede estar vacio. ");
-            }
-
-        } while (nombre == null ||  nombre.isBlank());
-
-        do {
-
-            interfaz.imprimirMensaje("Ingrese la descripción del departamento: ");
-            descripcion = interfaz.leerTexto();
-
-            if (descripcion == null ||  nombre.isBlank()) {
-                interfaz.imprimirMensaje("El nombre no puede estar vacio. ");
-            }
-
-        } while (descripcion == null ||  nombre.isBlank());
-
-        do {
-            interfaz.imprimirMensaje("Ingrese su correo [@gmail.com] : ");
-            correo = interfaz.leerTexto();
-
-            if (!validator.isValid(correo) || correo.isBlank()) {
-                interfaz.imprimirMensaje("El correo no puede estar vacio y debe cumplir con el formato indicado ");
-            }
-        } while (correo == null || correo.isBlank() || !validator.isValid(correo));
+        String nombre = validator.nombre();
+        String descripcion = validator.descripcion();
+        String correo = validator.correo();
 
         interfaz.imprimirMensaje(g.agregar(nombre, descripcion, correo));
 
@@ -77,32 +52,18 @@ public class ControllerDepartamento {
 
     public void eliminarPorCorreo() throws IOException {
 
-        String correo;
-        do {
-            interfaz.imprimirMensaje("Ingrese el correo del departamento para eliminarlo [@gmail.com] : ");
-            correo = interfaz.leerTexto();
+        if (!sesion.tienePermisosAdmin()) {
 
-            if (!validator.isValid(correo) || correo.isBlank()) {
-                interfaz.imprimirMensaje("El correo no puede estar vacio y debe cumplir con el formato indicado ");
-            }
-        } while (correo == null || correo.isBlank() || !validator.isValid(correo));
+        }
 
+        String correo = validator.correo();
         interfaz.imprimirMensaje(g.eliminarPorCorreo(correo));
 
     }
 
     public void listarPorCorreo() throws IOException {
 
-        String correo;
-        do {
-            interfaz.imprimirMensaje("Ingrese el correo del usuario [@gmail.com] : ");
-            correo = interfaz.leerTexto();
-
-            if (!validator.isValid(correo) || correo.isBlank()) {
-                interfaz.imprimirMensaje("El correo no puede estar vacio y debe cumplir con el formato indicado ");
-            }
-        } while (correo == null || correo.isBlank() || !validator.isValid(correo));
-
+        String correo = validator.correo();
         interfaz.imprimirMensaje(g.listarPorCorreo(correo));
 
     }

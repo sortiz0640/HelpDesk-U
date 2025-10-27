@@ -1,7 +1,6 @@
 package cr.ac.ucenfotec.sortiz0640.bl.logic;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
-
 import java.util.ArrayList;
 
 public class GestorTicket {
@@ -23,7 +22,6 @@ public class GestorTicket {
         // El departamento guarda el ticket creado
         agregarTicketDepartamento(tmpTicket, correoDepartamento);
         return "El ticket ha sido creado con éxito.\n" + tmpTicket.toString() ;
-
     }
 
     public void agregarTicketDepartamento(Ticket tmpTicket, String correoDepartamento) {
@@ -46,6 +44,5 @@ public class GestorTicket {
         }
 
         return null;
-
     }
 }
