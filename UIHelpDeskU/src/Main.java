@@ -19,6 +19,7 @@ public class Main {
         GestorDepartamento gestorDepartamento = new GestorDepartamento();
 
         String DEFAULT_DEPARTAMENTO = gestorDepartamento.agregar("Escuela de Ingeniería", "Gestion y administración de carreras informáticas", "escuelaingenieria@gmail.com");
+        String DEFAULT_DEPARTAMENTO2 = gestorDepartamento.agregar("Escuela de Administracion", "Gestion y administración de carreras administrativas", "escuelaadministracion@gmail.com");
 
 
         // Inyección de instancias a los controllers y gestores para trabar con una única instancia de cada uno.

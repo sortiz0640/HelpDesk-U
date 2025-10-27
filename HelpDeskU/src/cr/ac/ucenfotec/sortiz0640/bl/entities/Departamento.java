@@ -59,6 +59,16 @@ public class Departamento {
         return listaTickets;
     }
 
+    public boolean eliminarTicket(String ticketId) {
+        for (Ticket ticket : listaTickets) {
+            if (ticket.getId().equals(ticketId)) {
+                listaTickets.remove(ticket);
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "[Nombre: " + getNombre() +"][Email: " + getCorreo() + "][Desc: "+ getDescripcion() +"]";

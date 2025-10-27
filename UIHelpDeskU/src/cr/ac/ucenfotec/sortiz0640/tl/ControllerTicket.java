@@ -17,7 +17,7 @@ public class ControllerTicket {
     private GestorSesion sesion;
     private GestorDepartamento departamento;
     private ControllerDepartamento controllerDepartamento;
-    Validations validator = new Validations();
+    private Validations validator = new Validations();
 
     public ControllerTicket(GestorTicket g, GestorSesion sesion, ControllerDepartamento controllerDepartamento, GestorDepartamento departamento) {
         this.g = g;
@@ -50,7 +50,7 @@ public class ControllerTicket {
     public void crear() throws IOException {
 
         if (!departamento.existenDepartamentos()) {
-            interfaz.imprimirMensaje("No existen departamentos registrados. No es posible crear un Ticket en este momento.");
+            interfaz.imprimirMensaje("No existen departamentos registrados. No es posible crear un Ticket en este momento.\n");
             return;
         }
 
@@ -59,7 +59,7 @@ public class ControllerTicket {
 
         controllerDepartamento.listarTodos();
 
-        interfaz.imprimirMensaje("Digite el correo del departamento encargado\n");;
+        interfaz.imprimirMensaje("\nDigite el correo del departamento encargado");;
         String correoDepartamento = validator.correo();
 
         interfaz.imprimirMensaje(g.crear(asunto, descripcion, correoDepartamento, sesion.getCorreo()));
@@ -71,10 +71,11 @@ public class ControllerTicket {
         ArrayList<String> misTickets = g.listarMisTickets(sesion.getCorreo());
 
         if (misTickets == null) {
-            interfaz.imprimirMensaje("No existen tickets registrados");
+            interfaz.imprimirMensaje("No existen tickets registrados\n");
             return;
         }
 
+        interfaz.imprimirMensaje("Lista de tickets: \n");
         for (String t : misTickets) {
             interfaz.imprimirMensaje(t);
         }
@@ -82,13 +83,22 @@ public class ControllerTicket {
     }
 
     public void eliminar() throws IOException {
-        //todo
+
+        if (!sesion.tienePermisosAdmin()) {
+            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción\n");
+            return;
+        }
+
+        interfaz.imprimirMensaje("Ingrese el ID del ticket a eliminar.");
+        String ticketId = validator.nombre();
+
+        interfaz.imprimirMensaje(g.eliminar(ticketId));
     }
 
     public void actualizarEstado() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción");
+            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
@@ -99,13 +109,14 @@ public class ControllerTicket {
     public void listarTodosPorDepartamento() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción");
+            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
         interfaz.imprimirMensaje("LISTA DE DEPARTAMENTOS: \n");
         ArrayList<String> listaDepartamentos = departamento.listarTodos();
 
+        interfaz.imprimirMensaje("Lista de departamentos: \n");
         for (String u : listaDepartamentos) {
             interfaz.imprimirMensaje(u);
         }
@@ -113,12 +124,14 @@ public class ControllerTicket {
         interfaz.imprimirMensaje("\nIngrese el correo del departamento para mostrar sus tickets");
         String correo = validator.correo();
 
+
         ArrayList<String> listaTickets = g.listarTodosPorDepartamento(correo);
 
         if (listaTickets == null) {
-            interfaz.imprimirMensaje("El departamento no existe/no tiene tickets registrados");
+            interfaz.imprimirMensaje("El departamento no existe/no tiene tickets registrados\n");
         }
 
+        interfaz.imprimirMensaje("Lista de tickets: \n");
         for (String u : listaTickets) {
             interfaz.imprimirMensaje(u);
         }

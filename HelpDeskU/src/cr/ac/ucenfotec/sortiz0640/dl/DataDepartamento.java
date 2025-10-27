@@ -117,4 +117,20 @@ public class DataDepartamento {
 
         return lista;
     }
+
+    public boolean eliminarTicketPorId(String ticketId) {
+
+        for (Departamento d : departamentos) {
+            if (d.getListaTickets() != null) {
+                for (Ticket t : d.getListaTickets()) {
+                    if (t.getId().equals(ticketId)) {
+                        d.eliminarTicket(ticketId);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 }

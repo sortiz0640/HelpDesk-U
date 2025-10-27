@@ -48,4 +48,15 @@ public class GestorTicket {
     public ArrayList<String> listarMisTickets(String correoUsuarioCreador) {
         return gd.listarTicketsPorCorreo(correoUsuarioCreador);
     }
+
+    public String eliminar(String ticketId) {
+
+        boolean estado = gd.eliminarTicket();
+
+        if (!estado) {
+            return "No se ha logrado eliminar el ticket";
+        }
+
+        return  "Ticket eliminado correctamente";
+    }
 }

@@ -77,4 +77,9 @@ public class GestorDepartamento {
     public ArrayList<String> listarTicketsPorCorreo(String correo) {
         return db.listarTicketsPorCorreo(correo);
     }
+
+    public boolean eliminarTicketPorId(String ticketId) {
+
+        return db.eliminarTicketPorId(ticketId);
+    }
 }
