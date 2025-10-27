@@ -7,13 +7,13 @@ public class GestorTicket {
 
     GestorDepartamento gd;
 
-    public GestorTicket() {
-        gd = new GestorDepartamento();
+    public GestorTicket(GestorDepartamento gd) {
+        this.gd = gd;
     }
 
-    public String crear(String asunto, String descripcion, String correoDepartamento) {
+    public String crear(String asunto, String descripcion, String correoDepartamento, String correoUsuarioCreador) {
 
-        Ticket tmpTicket = new Ticket(asunto, descripcion);
+        Ticket tmpTicket = new Ticket(asunto, descripcion, correoUsuarioCreador);
 
         if (!gd.existePorCorreo(correoDepartamento)) {
             return "El correo especificado no pertenece a ningún departamento. Intente nuevamente";
@@ -36,13 +36,16 @@ public class GestorTicket {
 
     public ArrayList<String> listarTodosPorDepartamento(String correo) {
 
-        GestorDepartamento gestorDepartamento = new GestorDepartamento();
-        Departamento tmpDepartamento = gestorDepartamento.buscarPorCorreo(correo);
+        Departamento tmpDepartamento = gd.buscarPorCorreo(correo);
 
         if (tmpDepartamento != null) {
             return tmpDepartamento.listarTickets();
         }
 
         return null;
+    }
+
+    public ArrayList<String> listarMisTickets(String correoUsuarioCreador) {
+        return gd.listarTicketsPorCorreo(correoUsuarioCreador);
     }
 }

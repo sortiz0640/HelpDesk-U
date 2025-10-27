@@ -35,6 +35,10 @@ public class GestorSesion {
         return usuario;
     }
 
+    public String getCorreo() {
+        return usuario.getCorreo();
+    }
+
     public boolean isSesionActiva() {
         return usuario != null;
     }

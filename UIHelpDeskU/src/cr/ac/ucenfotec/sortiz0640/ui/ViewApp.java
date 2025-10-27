@@ -1,5 +1,6 @@
 package cr.ac.ucenfotec.sortiz0640.ui;
 
+import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorSesion;
 import cr.ac.ucenfotec.sortiz0640.util.UI;
 
 public class ViewApp {

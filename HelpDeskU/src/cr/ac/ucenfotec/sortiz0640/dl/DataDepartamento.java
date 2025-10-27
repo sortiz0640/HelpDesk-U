@@ -2,6 +2,7 @@ package cr.ac.ucenfotec.sortiz0640.dl;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DataDepartamento {
@@ -55,7 +56,9 @@ public class DataDepartamento {
     // Regresa un true si el correo pertenece a un departamento registrado
     public boolean existePorCorreo(String correo) {
         for (Departamento d : departamentos) {
-            return d.getCorreo().equals(correo);
+            if (d.getCorreo().equals(correo)) {
+                return true;
+            }
         }
 
         return false;
@@ -82,6 +85,36 @@ public class DataDepartamento {
         }
 
         tmpDepartamento.agregarTicket(ticket);
+        actualizarDepartamento(correo, tmpDepartamento);
 
+    }
+
+    public boolean existenDepartamentos() {
+        return !departamentos.isEmpty();
+    }
+
+    public void actualizarDepartamento(String correo, Departamento tmpDepartamento) {
+        for (int d = 0; d < departamentos.size(); d++) {
+            if (departamentos.get(d).getCorreo().equals(correo)) {
+                departamentos.set(d, tmpDepartamento);
+                break;
+            }
+        }
+    }
+
+    public ArrayList<String> listarTicketsPorCorreo(String correo) {
+        ArrayList<String> lista = new ArrayList<>(); // siempre inicializada
+
+        for (Departamento d : departamentos) {
+            if (d.getListaTickets() != null) {
+                for (Ticket t : d.getListaTickets()) {
+                    if (t.getCorreoUsuarioCreador().equals(correo)) {
+                        lista.add(t.toString());
+                    }
+                }
+            }
+        }
+
+        return lista;
     }
 }

@@ -6,6 +6,7 @@ import cr.ac.ucenfotec.sortiz0640.ui.ViewTicket;
 import cr.ac.ucenfotec.sortiz0640.util.UI;
 import cr.ac.ucenfotec.sortiz0640.util.Validations;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ControllerTicket {
@@ -37,8 +38,10 @@ public class ControllerTicket {
     public void procesarOpcion(int opcion) throws IOException {
         switch (opcion) {
             case 1: crear(); break;
-            case 2: actualizarEstado(); break;
-            case 3: listarTodosPorDepartamento(); break;
+            case 2: misTickets(); break;
+            case 3: eliminar(); break;
+            case 4: actualizarEstado(); break;
+            case 5: listarTodosPorDepartamento(); break;
             case 0: break;
             default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n");
         }
@@ -46,25 +49,59 @@ public class ControllerTicket {
 
     public void crear() throws IOException {
 
+        if (!departamento.existenDepartamentos()) {
+            interfaz.imprimirMensaje("No existen departamentos registrados. No es posible crear un Ticket en este momento.");
+            return;
+        }
+
         String asunto = validator.asunto();
         String descripcion = validator.descripcion();
+
+        controllerDepartamento.listarTodos();
 
         interfaz.imprimirMensaje("Digite el correo del departamento encargado\n");;
         String correoDepartamento = validator.correo();
 
-        controllerDepartamento.listarTodos();
-
-        interfaz.imprimirMensaje(g.crear(asunto, descripcion, correoDepartamento));
+        interfaz.imprimirMensaje(g.crear(asunto, descripcion, correoDepartamento, sesion.getCorreo()));
 
     }
 
+    public void misTickets() throws IOException {
+
+        ArrayList<String> misTickets = g.listarMisTickets(sesion.getCorreo());
+
+        if (misTickets == null) {
+            interfaz.imprimirMensaje("No existen tickets registrados");
+            return;
+        }
+
+        for (String t : misTickets) {
+            interfaz.imprimirMensaje(t);
+        }
+
+    }
+
+    public void eliminar() throws IOException {
+        //todo
+    }
 
     public void actualizarEstado() throws IOException {
+
+        if (!sesion.tienePermisosAdmin()) {
+            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción");
+            return;
+        }
+
         //todo
     }
 
 
     public void listarTodosPorDepartamento() throws IOException {
+
+        if (!sesion.tienePermisosAdmin()) {
+            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción");
+            return;
+        }
 
         interfaz.imprimirMensaje("LISTA DE DEPARTAMENTOS: \n");
         ArrayList<String> listaDepartamentos = departamento.listarTodos();

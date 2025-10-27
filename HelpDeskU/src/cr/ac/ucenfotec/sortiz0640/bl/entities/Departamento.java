@@ -1,4 +1,5 @@
 package cr.ac.ucenfotec.sortiz0640.bl.entities;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Departamento {
@@ -12,6 +13,7 @@ public class Departamento {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.correo = correo;
+        listaTickets = new ArrayList<>();
     }
 
     public String getNombre() {
@@ -51,6 +53,10 @@ public class Departamento {
         }
 
         return lista;
+    }
+
+    public ArrayList<Ticket> getListaTickets() {
+        return listaTickets;
     }
 
     @Override

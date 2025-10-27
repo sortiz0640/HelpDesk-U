@@ -42,6 +42,11 @@ public class ControllerDepartamento {
 
     public void registrar() throws IOException {
 
+        if (!sesion.tienePermisosAdmin()) {
+            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción");
+            return;
+        }
+
         String nombre = validator.nombre();
         String descripcion = validator.descripcion();
         String correo = validator.correo();
@@ -53,7 +58,8 @@ public class ControllerDepartamento {
     public void eliminarPorCorreo() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-
+            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción");
+            return;
         }
 
         String correo = validator.correo();
@@ -62,6 +68,11 @@ public class ControllerDepartamento {
     }
 
     public void listarPorCorreo() throws IOException {
+
+        if (!sesion.tienePermisosAdmin()) {
+            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción");
+            return;
+        }
 
         String correo = validator.correo();
         interfaz.imprimirMensaje(g.listarPorCorreo(correo));
@@ -81,4 +92,5 @@ public class ControllerDepartamento {
             interfaz.imprimirMensaje(u);
         }
     }
+
 }

@@ -2,6 +2,7 @@ package cr.ac.ucenfotec.sortiz0640.bl.entities;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
 
 import java.util.Random;
+import java.util.UUID;
 
 public class Ticket {
 
@@ -11,10 +12,12 @@ public class Ticket {
     private EstadoTicket estado;
     private String correoUsuarioCreador;
 
-    public Ticket(String asunto, String descripcion) {
+    public Ticket(String asunto, String descripcion, String correoUsuarioCreador) {
+        this.id = generarId();
         this.asunto = asunto;
         this.descripcion = descripcion;
         this.estado = EstadoTicket.NUEVO; // todos los tickets se crean por default con el estado NUEVO
+        this.correoUsuarioCreador = correoUsuarioCreador;
     }
 
     public String getAsunto() {
@@ -50,6 +53,10 @@ public class Ticket {
 
     public String getId() {
         return id;
+    }
+
+    public String getCorreoUsuarioCreador() {
+        return correoUsuarioCreador;
     }
 
     @Override

@@ -10,10 +10,21 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         GestorUsuario gestorUsuario = new GestorUsuario();
-        String status = gestorUsuario.agregar("Sebastian", "Ortiz Vargas", "admin@gmail.com", "adminAdmin", 1);
+
+        // Crea usuarios por defecto con diferentes niveles de acceso para el uso del programa
+
+        String DEFAULT_USER = gestorUsuario.agregar("Administrador", "SYS ADMIN", "admin@gmail.com", "adminAdmin", 1);
+        String DEFAULT_USER2 = gestorUsuario.agregar("Sebastian", "Ortiz Vargas", "sortiz0640@gmail.com", "abc123456", 3);
 
         GestorDepartamento gestorDepartamento = new GestorDepartamento();
-        GestorTicket gestorTicket = new GestorTicket();
+
+        String DEFAULT_DEPARTAMENTO = gestorDepartamento.agregar("Escuela de Ingeniería", "Gestion y administración de carreras informáticas", "escuelaingenieria@gmail.com");
+
+
+        // Inyección de instancias a los controllers y gestores para trabar con una única instancia de cada uno.
+        // todo: agregar Singleton una vez se vea la materia para facilitar el proceso
+
+        GestorTicket gestorTicket = new GestorTicket(gestorDepartamento);
         GestorSesion sesion = new GestorSesion(gestorUsuario);
         ControllerUsuario controllerUsuario = new ControllerUsuario(gestorUsuario, sesion);
         ControllerDepartamento controllerDepartamento = new ControllerDepartamento(gestorDepartamento, sesion);
@@ -21,6 +32,8 @@ public class Main {
         ControllerApp controllerApp = new ControllerApp(controllerUsuario, controllerTicket, controllerDepartamento, sesion);
         ControllerSesion controllerSesion = new ControllerSesion(sesion, controllerApp);
 
+
+        // Inicia el programa mostrando el menu de inicio de sesión
 
         controllerSesion.start();
     }

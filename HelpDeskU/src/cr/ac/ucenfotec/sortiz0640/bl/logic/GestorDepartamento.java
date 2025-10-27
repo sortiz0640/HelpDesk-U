@@ -36,13 +36,7 @@ public class GestorDepartamento {
     }
 
     public boolean existePorCorreo(String correo) {
-
-        boolean res = db.existePorCorreo(correo);
-        if (!res) {
-            return false;
-        }
-        return res;
-
+        return db.existePorCorreo(correo);
     }
 
     public String listarPorCorreo(String correo) {
@@ -55,6 +49,11 @@ public class GestorDepartamento {
     }
 
     public ArrayList<String> listarTodos() {
+
+        if (!db.existenDepartamentos()) {
+            return null;
+        }
+
         return db.listarTodos();
     }
 
@@ -62,7 +61,20 @@ public class GestorDepartamento {
         return db.getDepartamentoPorCorreo(correo);
     }
 
+    public boolean existenDepartamentos() {
+
+        boolean res = db.existenDepartamentos();
+        if (!res) {
+            return false;
+        }
+        return res;
+    }
+
     public void agregarTicket(Ticket ticket, String correo) {
         db.agregarTicket(ticket, correo);
+    }
+
+    public ArrayList<String> listarTicketsPorCorreo(String correo) {
+        return db.listarTicketsPorCorreo(correo);
     }
 }
