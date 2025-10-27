@@ -43,7 +43,7 @@ public class DataDepartamento {
     }
 
     // Regresa un arreglo de objetos tipo String, siendo cada objeto el toString de cada departamento
-    public ArrayList<String> getDepartamentos() {
+    public ArrayList<String> listarTodos() {
 
         ArrayList<String> lista = new ArrayList<>();
         for (Departamento d : departamentos) {

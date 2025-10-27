@@ -48,6 +48,10 @@ public class Usuario {
         this.password = password;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public ListaRoles getRol() {
         return rol;
     }

@@ -1,27 +1,26 @@
 package cr.ac.ucenfotec.sortiz0640.bl.logic;
-
+import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
-import cr.ac.ucenfotec.sortiz0640.dl.DataTicket;
+
+import java.util.ArrayList;
 
 public class GestorTicket {
 
-    DataTicket db;
     GestorDepartamento gd;
 
     public GestorTicket() {
-        db = new DataTicket();
         gd = new GestorDepartamento();
     }
 
     public String crear(String asunto, String descripcion, String correoDepartamento) {
 
-        Ticket tmpTicket = new Ticket(asunto, descripcion, correoDepartamento);
+        Ticket tmpTicket = new Ticket(asunto, descripcion);
 
         if (!gd.existePorCorreo(correoDepartamento)) {
             return "El correo especificado no pertenece a ningún departamento. Intente nuevamente";
         }
 
-        db.agregar(tmpTicket);
+        // El departamento guarda el ticket creado
         agregarTicketDepartamento(tmpTicket, correoDepartamento);
         return "El ticket ha sido creado con éxito.\n" + tmpTicket.toString() ;
 
@@ -31,28 +30,22 @@ public class GestorTicket {
         gd.agregarTicket(tmpTicket, correoDepartamento);
     }
 
-    public String eliminarPorId(String id) {
+    //public String actualizarPorId(String id, int estado) {
 
-        boolean res = db.eliminarPorId(id);
-        if (!res) {
-            return "El ticket especificado no existe";
+        //todo
+
+    //}
+
+    public ArrayList<String> listarTodosPorDepartamento(String correo) {
+
+        GestorDepartamento gestorDepartamento = new GestorDepartamento();
+        Departamento tmpDepartamento = gestorDepartamento.buscarPorCorreo(correo);
+
+        if (tmpDepartamento != null) {
+            return tmpDepartamento.listarTickets();
         }
-        return "Se ha eliminado el ticket correctamente";
-    }
 
-    public String actualizarPorId() {
-
-    }
-
-    public String listarPorId() {
-
-    }
-
-    public String listarTodos() {
-
-    }
-
-    public String listarTodosPorDepartamento() {
+        return null;
 
     }
 }

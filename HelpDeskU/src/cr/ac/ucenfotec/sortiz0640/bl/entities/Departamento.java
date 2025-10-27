@@ -1,7 +1,6 @@
 package cr.ac.ucenfotec.sortiz0640.bl.entities;
 import java.util.ArrayList;
 
-
 public class Departamento {
 
     private String nombre;
@@ -39,9 +38,19 @@ public class Departamento {
         this.correo = correo;
     }
 
-
     public void agregarTicket(Ticket ticket) {
         listaTickets.add(ticket);
+    }
+
+    public ArrayList<String> listarTickets() {
+
+        ArrayList<String> lista = new ArrayList<>();
+
+        for (Ticket ticket : listaTickets) {
+            lista.add(ticket.toString());
+        }
+
+        return lista;
     }
 
     @Override

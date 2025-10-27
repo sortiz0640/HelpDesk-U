@@ -43,7 +43,7 @@ public class DataUsuario {
     }
 
     // Regresa un arreglo de objetos tipo String, siendo cada objeto el toString de cada usuario
-    public ArrayList<String> getUsuarios() {
+    public ArrayList<String> listarTodos() {
 
         if (usuarios.isEmpty()) {
             return null;
@@ -54,6 +54,10 @@ public class DataUsuario {
             lista.add(u.toString());
         }
         return lista;
+    }
+
+    public ArrayList<Usuario> getUsuarios() {
+        return usuarios;
     }
 
 }

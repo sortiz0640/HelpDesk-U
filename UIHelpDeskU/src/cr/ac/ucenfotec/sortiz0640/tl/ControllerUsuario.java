@@ -130,7 +130,7 @@ public class ControllerUsuario {
 
     public void listarTodos() {
 
-        ArrayList<String> lista = g.getUsuarios();
+        ArrayList<String> lista = g.listarTodos();
 
         if (lista == null) {
             interfaz.imprimirMensaje("No existen usuarios registrados");

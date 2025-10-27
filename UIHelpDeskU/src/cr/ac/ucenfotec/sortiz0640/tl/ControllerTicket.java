@@ -1,12 +1,11 @@
 package cr.ac.ucenfotec.sortiz0640.tl;
-import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
+import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorDepartamento;
 import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorTicket;
 import cr.ac.ucenfotec.sortiz0640.ui.ViewTicket;
 import cr.ac.ucenfotec.sortiz0640.util.UI;
 import org.apache.commons.validator.routines.EmailValidator;
-
 import java.io.IOException;
-import java.nio.channels.FileLock;
+import java.util.ArrayList;
 
 public class ControllerTicket {
 
@@ -27,11 +26,8 @@ public class ControllerTicket {
     public void procesarOpcion(int opcion) throws IOException {
         switch (opcion) {
             case 1: crear(); break;
-            case 2: eliminarPorId(); break;
-            case 3: actualizarEstado(); break;
-            case 4: listarPorId(); break;
-            case 5: listarTodos(); break;
-            case 6: listarTodosPorDepartamento(); break;
+            case 2: actualizarEstado(); break;
+            case 3: listarTodosPorDepartamento(); break;
             default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n");
         }
     }
@@ -47,26 +43,26 @@ public class ControllerTicket {
             interfaz.imprimirMensaje("Ingrese el asunto del ticket");
             asunto = interfaz.leerTexto();
 
-            if (asunto.isBlank() || asunto == null) {
+            if (asunto.isBlank()) {
                 interfaz.imprimirMensaje("El asunto no puede estar vacio!");
             }
 
-        } while (asunto.isBlank() || asunto == null);
+        } while (asunto.isBlank());
 
         do {
             interfaz.imprimirMensaje("Ingrese el descripcion del ticket");
             descripcion = interfaz.leerTexto();
 
-            if (descripcion.isBlank() || descripcion == null) {
+            if (descripcion.isBlank()) {
                 interfaz.imprimirMensaje("La descripcion no puede estar vacia!");
             }
-        } while (descripcion.isBlank() || descripcion == null);
+        } while (descripcion.isBlank());
 
         interfaz.imprimirMensaje("Digite el correo del departamento encargado\n");
         cd.listarTodos();
 
         do {
-            interfaz.imprimirMensaje("Ingrese su correo [@gmail.com] : ");
+            interfaz.imprimirMensaje("Ingrese el correo del departamento3 [@gmail.com] : ");
             correoDepartamento = interfaz.leerTexto();
 
             if (!validator.isValid(correoDepartamento) || correoDepartamento.isBlank()) {
@@ -78,23 +74,44 @@ public class ControllerTicket {
 
     }
 
-    public void eliminarPorId() throws IOException{
-
-    }
 
     public void actualizarEstado() throws IOException {
-
+        //todo
     }
 
-    public void listarPorId() throws IOException {
-
-    }
-
-    public void listarTodos() throws IOException {
-
-    }
 
     public void listarTodosPorDepartamento() throws IOException {
+
+        GestorDepartamento gestorDepartamento = new GestorDepartamento();
+
+        interfaz.imprimirMensaje("LISTA DE DEPARTAMENTOS: \n");
+        ArrayList<String> listaDepartamentos = gestorDepartamento.listarTodos();
+
+        for (String u : listaDepartamentos) {
+            interfaz.imprimirMensaje(u);
+        }
+
+        interfaz.imprimirMensaje("\nIngrese el correo del departamento para mostrar sus tickets");
+        String correo;
+
+        do {
+            interfaz.imprimirMensaje("Ingrese el correo del usuario [@gmail.com] : ");
+            correo = interfaz.leerTexto();
+
+            if (!validator.isValid(correo) || correo.isBlank()) {
+                interfaz.imprimirMensaje("El correo no puede estar vacio y debe cumplir con el formato indicado ");
+            }
+        } while (correo == null || correo.isBlank() || !validator.isValid(correo));
+
+        ArrayList<String> listaTickets = g.listarTodosPorDepartamento(correo);
+
+        if (listaTickets == null) {
+            interfaz.imprimirMensaje("El departamento no existe/no tiene tickets registrados");
+        }
+
+        for (String u : listaTickets) {
+            interfaz.imprimirMensaje(u);
+        }
 
     }
 }

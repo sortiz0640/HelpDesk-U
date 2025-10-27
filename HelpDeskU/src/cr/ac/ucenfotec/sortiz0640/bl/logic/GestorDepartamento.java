@@ -54,8 +54,12 @@ public class GestorDepartamento {
         return res;
     }
 
-    public ArrayList<String> getDepartamentos() {
-        return db.getDepartamentos();
+    public ArrayList<String> listarTodos() {
+        return db.listarTodos();
+    }
+
+    public Departamento buscarPorCorreo(String correo) {
+        return db.getDepartamentoPorCorreo(correo);
     }
 
     public void agregarTicket(Ticket ticket, String correo) {

@@ -1,4 +1,5 @@
 package cr.ac.ucenfotec.sortiz0640.tl;
+import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorSesion;
 import cr.ac.ucenfotec.sortiz0640.ui.ViewApp;
 import cr.ac.ucenfotec.sortiz0640.util.UI;
 
@@ -27,6 +28,7 @@ public class ControllerApp {
             case 1: usuario.start(); break;
             case 2: departamento.start(); break;
             case 3: ticket.start(); break;
+            case 0: GestorSesion.cerrarSesion(); break;
             default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n");
         }
     }

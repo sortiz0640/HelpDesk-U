@@ -109,7 +109,7 @@ public class ControllerDepartamento {
 
     public void listarTodos() {
 
-        ArrayList<String> lista = g.getDepartamentos();
+        ArrayList<String> lista = g.listarTodos();
 
         if (lista == null || lista.isEmpty()) {
             interfaz.imprimirMensaje("No existen departamentos registrados");

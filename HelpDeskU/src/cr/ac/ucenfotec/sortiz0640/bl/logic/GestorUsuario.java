@@ -14,7 +14,7 @@ public class GestorUsuario {
         db  = new DataUsuario();
     }
 
-    public String agregar(String nombre, String descripcion, String correo, String password, int rolEntrada) {
+    public String agregar(String nombre, String apellidos, String correo, String password, int rolEntrada) {
 
         ListaRoles rol = switch (rolEntrada) {
             case 1 -> ListaRoles.ADMIN;
@@ -23,7 +23,7 @@ public class GestorUsuario {
             default -> null;
         };
 
-        Usuario tmpUsuario = new Usuario(nombre, descripcion, correo, password, rol);
+        Usuario tmpUsuario = new Usuario(nombre, apellidos, correo, password, rol);
         boolean res = db.agregar(tmpUsuario);
 
         if (!res) {
@@ -51,7 +51,11 @@ public class GestorUsuario {
 
     }
 
-    public ArrayList<String> getUsuarios() {
+    public ArrayList<Usuario> getUsuarios() {
         return db.getUsuarios();
+    }
+
+    public ArrayList<String> listarTodos() {
+        return db.listarTodos();
     }
 }
