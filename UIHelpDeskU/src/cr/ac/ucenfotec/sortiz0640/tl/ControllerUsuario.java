@@ -50,7 +50,7 @@ public class ControllerUsuario {
         }
 
         String nombre = validator.nombre();
-        String apellidos = validator.nombre();
+        String apellidos = validator.apellidos();
         String correo = validator.correo();
         String password = validator.password();
         int rol = validator.rol();

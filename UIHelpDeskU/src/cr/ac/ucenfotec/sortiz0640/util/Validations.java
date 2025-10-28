@@ -13,7 +13,7 @@ public class Validations {
         String correo = "";
         do {
 
-            interfaz.imprimirMensaje("Ingrese su correo [@gmail.com] : ");
+            interfaz.imprimirMensaje("Ingrese el correo [ucenfotec.ac.cr] : ");
             correo = interfaz.leerTexto();
 
             if (!validator.isValid(correo) || correo.isBlank()) {
@@ -46,11 +46,29 @@ public class Validations {
 
         do {
 
-            interfaz.imprimirMensaje("Ingrese su nombre: ");
+            interfaz.imprimirMensaje("Ingrese el nombre: ");
             nombre = interfaz.leerTexto();
 
             if (nombre == null ||  nombre.isBlank()) {
-                interfaz.imprimirMensaje("El nombre no puede estar vacio. ");
+                interfaz.imprimirMensaje("[ERR] El nombre no puede estar vacio. ");
+            }
+
+        } while (nombre == null ||  nombre.isBlank());
+
+        return nombre;
+    }
+
+    public String apellidos() throws IOException {
+
+        String nombre;
+
+        do {
+
+            interfaz.imprimirMensaje("Ingrese los apellidos [Ejem: Ortiz Vargas]");
+            nombre = interfaz.leerTexto();
+
+            if (nombre == null ||  nombre.isBlank()) {
+                interfaz.imprimirMensaje("[ERR] El nombre no puede estar vacio. ");
             }
 
         } while (nombre == null ||  nombre.isBlank());
@@ -66,7 +84,7 @@ public class Validations {
             rol = interfaz.leerOpcion();
 
             if (rol < 1 || rol > 3) {
-                interfaz.imprimirMensaje("Opción invalida. Intente nuevamente ");
+                interfaz.imprimirMensaje("[ERR] Opción invalida. Intente nuevamente ");
             }
         } while (rol < 1 || rol > 3);
         return rol;
@@ -80,7 +98,7 @@ public class Validations {
             descripcion = interfaz.leerTexto();
 
             if (descripcion == null ||  descripcion.isBlank()) {
-                interfaz.imprimirMensaje("El nombre no puede estar vacio. ");
+                interfaz.imprimirMensaje("[ERR] El nombre no puede estar vacio. ");
             }
 
         } while (descripcion == null ||  descripcion.isBlank());
@@ -91,11 +109,11 @@ public class Validations {
         String asunto = "";
 
         do {
-            interfaz.imprimirMensaje("Ingrese ela asunto: ");
+            interfaz.imprimirMensaje("Ingrese el asunto: ");
             asunto = interfaz.leerTexto();
 
             if (asunto == null ||  asunto.isBlank()) {
-                interfaz.imprimirMensaje("El nombre no puede estar vacio. ");
+                interfaz.imprimirMensaje("[ERR] El asunto no puede estar vacio. ");
             }
 
         } while (asunto == null ||  asunto.isBlank());
@@ -113,7 +131,7 @@ public class Validations {
             nombre = interfaz.leerTexto();
 
             if (nombre == null ||  nombre.isBlank()) {
-                interfaz.imprimirMensaje("El nombre no puede estar vacio. ");
+                interfaz.imprimirMensaje("[ERR] El id no puede estar vacio. ");
             }
 
         } while (nombre == null ||  nombre.isBlank());
@@ -129,7 +147,7 @@ public class Validations {
             estado = interfaz.leerOpcion();
 
             if (estado < 1 || estado > 3) {
-                interfaz.imprimirMensaje("Opción invalida. Intente nuevamente ");
+                interfaz.imprimirMensaje("[ERR] Opción invalida. Intente nuevamente ");
             }
         } while (estado < 1 || estado > 3);
 

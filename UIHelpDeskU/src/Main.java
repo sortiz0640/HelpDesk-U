@@ -13,17 +13,16 @@ public class Main {
 
         // Crea usuarios por defecto con diferentes niveles de acceso para el uso del programa
 
-        String DEFAULT_USER = gestorUsuario.agregar("Administrador", "SYS ADMIN", "admin@gmail.com", "adminAdmin", 1);
-        String DEFAULT_USER2 = gestorUsuario.agregar("Sebastian", "Ortiz Vargas", "sortiz0640@gmail.com", "abc123456", 3);
+        String DEFAULT_ADMIN = gestorUsuario.agregar("Administrador", "SYS ADMIN", "admin@ucenfotec.ac.cr", "adminAdmin", 1);
+        String DEFAULT_USER = gestorUsuario.agregar("Sebastian", "Ortiz Vargas", "sortiz0640@ucenfotec.ac.cr", "abc123456", 3);
 
         GestorDepartamento gestorDepartamento = new GestorDepartamento();
 
-        String DEFAULT_DEPARTAMENTO = gestorDepartamento.agregar("Escuela de Ingeniería", "Gestion y administración de carreras informáticas", "escuelaingenieria@gmail.com");
-        String DEFAULT_DEPARTAMENTO2 = gestorDepartamento.agregar("Escuela de Administracion", "Gestion y administración de carreras administrativas", "escuelaadministracion@gmail.com");
+        String DEFAULT_DEPARTAMENTO = gestorDepartamento.agregar("Escuela de Ingeniería", "Gestion y administración de carreras informáticas", "escuelaingenieria@ucenfotec.ac.cr");
+        String DEFAULT_DEPARTAMENTO2 = gestorDepartamento.agregar("Escuela de Administracion", "Gestion y administración de carreras administrativas", "escuelaadministracion@ucenfotec.ac.cr");
 
 
         // Inyección de instancias a los controllers y gestores para trabar con una única instancia de cada uno.
-        // todo: agregar Singleton una vez se vea la materia para facilitar el proceso
 
         GestorTicket gestorTicket = new GestorTicket(gestorDepartamento);
         GestorSesion sesion = new GestorSesion(gestorUsuario);
