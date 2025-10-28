@@ -1,7 +1,5 @@
 package cr.ac.ucenfotec.sortiz0640.bl.entities;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Departamento {

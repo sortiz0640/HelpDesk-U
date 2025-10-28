@@ -27,16 +27,16 @@ public class GestorUsuario {
         boolean res = db.agregar(tmpUsuario);
 
         if (!res) {
-            return "El correo del usuario ya se encuentra registrado!";
+            return "[ERR] El correo del usuario ya se encuentra registrado!";
         }
-        return "Usuario agregado correctamente";
+        return "[INFO] Usuario agregado correctamente";
 
     }
 
     public String listarPorCorreo(String correo) {
         String res = db.listarPorCorreo(correo);
         if (res == null) {
-            return "El usuario especificado no existe";
+            return "[ERR] El usuario especificado no existe";
         }
         return res;
     }
@@ -45,9 +45,9 @@ public class GestorUsuario {
 
         boolean res = db.eliminarPorCorreo(correo);
         if (!res) {
-            return "El usuario especificado no existe";
+            return "[ERR] El usuario especificado no existe";
         }
-        return "Usuario eliminado correctamente";
+        return "[INFO] Usuario eliminado correctamente";
 
     }
 

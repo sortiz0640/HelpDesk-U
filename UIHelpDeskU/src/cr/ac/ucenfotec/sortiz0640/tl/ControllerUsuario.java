@@ -38,14 +38,14 @@ public class ControllerUsuario {
             case 3: listarPorCorreo(); break;
             case 4: listarTodos(); break;
             case 0: break;
-            default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n");
+            default: interfaz.imprimirMensaje("[INFO] Opción no válida. Intente nuevamente! \n");
         }
     }
 
     public void registrar() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción");
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción");
             return;
         }
 
@@ -62,7 +62,7 @@ public class ControllerUsuario {
     public void eliminarPorCorreo() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción");
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción");
             return;
         }
 
@@ -74,7 +74,7 @@ public class ControllerUsuario {
     public void listarPorCorreo() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción");
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción");
             return;
         }
 
@@ -86,17 +86,18 @@ public class ControllerUsuario {
     public void listarTodos() {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción");
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción");
             return;
         }
 
         ArrayList<String> lista = g.listarTodos();
 
-        if (lista == null) {
+        if (lista == null || lista.isEmpty()) {
             interfaz.imprimirMensaje("No existen usuarios registrados");
             return;
         }
 
+        interfaz.imprimirMensaje("[INFO] Lista de usuarios registrados: \n");
         for (String u : lista) {
             interfaz.imprimirMensaje(u);
         }

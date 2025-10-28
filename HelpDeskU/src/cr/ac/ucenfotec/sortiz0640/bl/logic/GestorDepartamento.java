@@ -20,9 +20,9 @@ public class GestorDepartamento {
         Departamento tmpDepartamento = new Departamento(nombre, descripcion, correo);
         boolean res = db.agregar(tmpDepartamento);
         if (!res) {
-            return "El correo/nombre del departamento ya se encuentra registrado";
+            return "[ERR] El correo/nombre del departamento ya se encuentra registrado";
         }
-        return "Departamento agregado correctamente";
+        return "[INFO] Departamento agregado correctamente";
 
     }
 
@@ -30,9 +30,9 @@ public class GestorDepartamento {
 
         boolean res = db.eliminarPorCorreo(correo);
         if (!res) {
-            return "El departamento especificado no existe";
+            return "[ERR] El departamento especificado no existe";
         }
-        return "Se ha eliminado el departamento correctamente";
+        return "[INFO] Se ha eliminado el departamento correctamente";
 
     }
 
@@ -44,7 +44,7 @@ public class GestorDepartamento {
 
         String res = db.listarPorCorreo(correo);
         if (res == null) {
-            return "El departamento especificado no existe";
+            return "[ERR] El departamento especificado no existe";
         }
         return res;
     }

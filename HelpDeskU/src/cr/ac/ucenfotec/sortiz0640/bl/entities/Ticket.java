@@ -1,8 +1,6 @@
 package cr.ac.ucenfotec.sortiz0640.bl.entities;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
-
 import java.util.Random;
-import java.util.UUID;
 
 public class Ticket {
 

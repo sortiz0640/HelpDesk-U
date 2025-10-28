@@ -43,14 +43,14 @@ public class ControllerTicket {
             case 4: actualizarEstado(); break;
             case 5: listarTodosPorDepartamento(); break;
             case 0: break;
-            default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n");
+            default: interfaz.imprimirMensaje("[INFO] Opción no válida. Intente nuevamente! \n");
         }
     }
 
     public void crear() throws IOException {
 
         if (!departamento.existenDepartamentos()) {
-            interfaz.imprimirMensaje("No existen departamentos registrados. No es posible crear un Ticket en este momento.\n");
+            interfaz.imprimirMensaje("[INFO] No existen departamentos registrados. No es posible crear un Ticket en este momento.\n");
             return;
         }
 
@@ -70,12 +70,12 @@ public class ControllerTicket {
 
         ArrayList<String> misTickets = g.listarMisTickets(sesion.getCorreo());
 
-        if (misTickets == null) {
-            interfaz.imprimirMensaje("No existen tickets registrados\n");
+        if (misTickets == null || misTickets.isEmpty()) {
+            interfaz.imprimirMensaje("[INFO] No existen tickets registrados\n");
             return;
         }
 
-        interfaz.imprimirMensaje("Lista de tickets: \n");
+        interfaz.imprimirMensaje("[INFO] Lista de tickets: \n");
         for (String t : misTickets) {
             interfaz.imprimirMensaje(t);
         }
@@ -85,20 +85,18 @@ public class ControllerTicket {
     public void eliminar() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción\n");
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
-        interfaz.imprimirMensaje("Ingrese el ID del ticket a eliminar.");
         String ticketId = validator.ticketId();
-
         interfaz.imprimirMensaje(g.eliminar(ticketId));
     }
 
     public void actualizarEstado() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción\n");
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
@@ -111,13 +109,13 @@ public class ControllerTicket {
     public void listarTodosPorDepartamento() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción\n");
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
         ArrayList<String> listaDepartamentos = departamento.listarTodos();
 
-        interfaz.imprimirMensaje("Lista de departamentos: \n");
+        interfaz.imprimirMensaje("[INFO] Lista de departamentos: \n");
         for (String u : listaDepartamentos) {
             interfaz.imprimirMensaje(u);
         }
@@ -128,11 +126,12 @@ public class ControllerTicket {
 
         ArrayList<String> listaTickets = g.listarTodosPorDepartamento(correo);
 
-        if (listaTickets == null) {
-            interfaz.imprimirMensaje("El departamento no existe/no tiene tickets registrados\n");
+        if (listaTickets == null || listaTickets.isEmpty()) {
+            interfaz.imprimirMensaje("[INFO] El departamento no existe/no tiene tickets registrados\n");
+            return;
         }
 
-        interfaz.imprimirMensaje("Lista de tickets: \n");
+        interfaz.imprimirMensaje("[INFO] Lista de tickets: \n");
         for (String u : listaTickets) {
             interfaz.imprimirMensaje(u);
         }

@@ -31,9 +31,6 @@ public class GestorSesion {
         }
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
 
     public String getCorreo() {
         return usuario.getCorreo();

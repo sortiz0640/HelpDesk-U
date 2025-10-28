@@ -18,12 +18,12 @@ public class GestorTicket {
         Ticket tmpTicket = new Ticket(asunto, descripcion, correoUsuarioCreador);
 
         if (!gd.existePorCorreo(correoDepartamento)) {
-            return "El correo especificado no pertenece a ningún departamento. Intente nuevamente";
+            return "[ERR] El correo especificado no pertenece a ningún departamento. Intente nuevamente";
         }
 
         // El departamento guarda el ticket creado
         agregarTicketDepartamento(tmpTicket, correoDepartamento);
-        return "El ticket ha sido creado con éxito.\n" + tmpTicket.toString() ;
+        return "[INFO] El ticket ha sido creado con éxito.\n" + tmpTicket.toString() ;
     }
 
     public void agregarTicketDepartamento(Ticket tmpTicket, String correoDepartamento) {
@@ -50,10 +50,10 @@ public class GestorTicket {
         boolean res = gd.eliminarTicketPorId(ticketId);
 
         if (!res) {
-            return "No se ha logrado eliminar el ticket";
+            return "[ERR] El ticket especificado no existe. Intente nuevamente";
         }
 
-        return  "Ticket eliminado correctamente";
+        return "[INFO] Ticket eliminado correctamente";
     }
 
     public String actualizarEstado(String ticketId, int estado) {
@@ -67,9 +67,9 @@ public class GestorTicket {
         boolean res = gd.actualizarEstadoTicket(ticketId, nuevoEstado);
 
         if (!res) {
-            return "No se ha logrado actualizar el ticket";
+            return "[ERR] El Ticket especificado no existe. Intente nuevamente.";
         }
 
-        return  "Ticket actualizado correctamente";
+        return  "[INFO] Ticket actualizado correctamente";
     }
 }

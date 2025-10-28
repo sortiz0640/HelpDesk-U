@@ -36,14 +36,14 @@ public class ControllerDepartamento {
             case 3: listarPorCorreo(); break;
             case 4: listarTodos(); break;
             case 0: break;
-            default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n");
+            default: interfaz.imprimirMensaje("[INFO] Opción no válida. Intente nuevamente! \n");
         }
     }
 
     public void registrar() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción\n");
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
@@ -58,7 +58,7 @@ public class ControllerDepartamento {
     public void eliminarPorCorreo() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción\n");
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
@@ -70,7 +70,7 @@ public class ControllerDepartamento {
     public void listarPorCorreo() throws IOException {
 
         if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("El usuario no tiene permisos para ejecutar esta opción\n");
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
@@ -84,11 +84,11 @@ public class ControllerDepartamento {
         ArrayList<String> lista = g.listarTodos();
 
         if (lista == null || lista.isEmpty()) {
-            interfaz.imprimirMensaje("No existen departamentos registrados\n");
+            interfaz.imprimirMensaje("[INFO] No existen departamentos registrados\n");
             return;
         }
 
-        interfaz.imprimirMensaje("Lista de departamentos:\n");
+        interfaz.imprimirMensaje("[INFO] Lista de departamentos:\n");
         for (String u : lista) {
             interfaz.imprimirMensaje(u);
         }

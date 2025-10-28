@@ -31,7 +31,7 @@ public class ControllerSesion {
         switch (opcion) {
             case 1: iniciarSesion(); break;
             case 0: break;
-            default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n"); break;
+            default: interfaz.imprimirMensaje("[INFO] Opción no válida. Intente nuevamente! \n"); break;
         }
     }
 
@@ -43,11 +43,11 @@ public class ControllerSesion {
         boolean estado = sesion.iniciarSesion(correo, password);
 
         if (!estado) {
-            interfaz.imprimirMensaje("El usuario o la contrasena no son correctos. Intente nuevamente");
+            interfaz.imprimirMensaje("[INFO] El usuario o la contraseña no son correctos. Intente nuevamente");
             return;
         }
 
-        interfaz.imprimirMensaje("Sesion iniciada correctamente");
+        interfaz.imprimirMensaje("[INFO] Sesión iniciada correctamente");
 
         // Arranca el menu principal
         controllerApp.start();

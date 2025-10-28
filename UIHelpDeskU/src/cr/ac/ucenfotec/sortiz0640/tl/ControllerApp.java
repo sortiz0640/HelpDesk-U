@@ -37,7 +37,7 @@ public class ControllerApp {
             case 2: departamento.start(); break;
             case 3: ticket.start(); break;
             case 0: sesion.cerrarSesion(); break;
-            default: interfaz.imprimirMensaje("Opción no válida. Intente nuevamente! \n");
+            default: interfaz.imprimirMensaje("[INFO] Opción no válida. Intente nuevamente! \n");
         }
     }
 }

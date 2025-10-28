@@ -1,8 +1,5 @@
 package cr.ac.ucenfotec.sortiz0640.bl.entities;
-
 import cr.ac.ucenfotec.sortiz0640.bl.util.ListaRoles;
-
-import java.util.Random;
 
 public class Usuario {
 
