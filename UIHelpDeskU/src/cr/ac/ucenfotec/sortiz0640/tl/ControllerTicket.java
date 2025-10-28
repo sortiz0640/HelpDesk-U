@@ -90,7 +90,7 @@ public class ControllerTicket {
         }
 
         interfaz.imprimirMensaje("Ingrese el ID del ticket a eliminar.");
-        String ticketId = validator.nombre();
+        String ticketId = validator.ticketId();
 
         interfaz.imprimirMensaje(g.eliminar(ticketId));
     }
@@ -102,7 +102,9 @@ public class ControllerTicket {
             return;
         }
 
-        //todo
+        String ticketId = validator.ticketId();
+        int estado = validator.estado();
+        interfaz.imprimirMensaje(g.actualizarEstado(ticketId, estado));
     }
 
 
@@ -113,7 +115,6 @@ public class ControllerTicket {
             return;
         }
 
-        interfaz.imprimirMensaje("LISTA DE DEPARTAMENTOS: \n");
         ArrayList<String> listaDepartamentos = departamento.listarTodos();
 
         interfaz.imprimirMensaje("Lista de departamentos: \n");

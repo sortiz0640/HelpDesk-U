@@ -1,6 +1,7 @@
 package cr.ac.ucenfotec.sortiz0640.dl;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
+import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -125,6 +126,21 @@ public class DataDepartamento {
                 for (Ticket t : d.getListaTickets()) {
                     if (t.getId().equals(ticketId)) {
                         d.eliminarTicket(ticketId);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean actualizarEstadoTicket(String ticketId, EstadoTicket estado) {
+        for (Departamento d : departamentos) {
+            if (d.getListaTickets() != null) {
+                for (Ticket t : d.getListaTickets()) {
+                    if (t.getId().equals(ticketId)) {
+                        d.actualizarEstadoTicket(ticketId, estado);
                         return true;
                     }
                 }

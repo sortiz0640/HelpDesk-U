@@ -1,4 +1,6 @@
 package cr.ac.ucenfotec.sortiz0640.bl.entities;
+import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -63,6 +65,16 @@ public class Departamento {
         for (Ticket ticket : listaTickets) {
             if (ticket.getId().equals(ticketId)) {
                 listaTickets.remove(ticket);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean actualizarEstadoTicket(String ticketId, EstadoTicket estado) {
+        for (Ticket ticket : listaTickets) {
+            if (ticket.getId().equals(ticketId)) {
+                ticket.setEstado(estado);
                 return true;
             }
         }

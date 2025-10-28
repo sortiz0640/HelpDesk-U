@@ -1,6 +1,8 @@
 package cr.ac.ucenfotec.sortiz0640.bl.logic;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
+import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
+
 import java.util.ArrayList;
 
 public class GestorTicket {
@@ -28,12 +30,6 @@ public class GestorTicket {
         gd.agregarTicket(tmpTicket, correoDepartamento);
     }
 
-    //public String actualizarPorId(String id, int estado) {
-
-        //todo
-
-    //}
-
     public ArrayList<String> listarTodosPorDepartamento(String correo) {
 
         Departamento tmpDepartamento = gd.buscarPorCorreo(correo);
@@ -51,12 +47,29 @@ public class GestorTicket {
 
     public String eliminar(String ticketId) {
 
-        boolean estado = gd.eliminarTicket();
+        boolean res = gd.eliminarTicketPorId(ticketId);
 
-        if (!estado) {
+        if (!res) {
             return "No se ha logrado eliminar el ticket";
         }
 
         return  "Ticket eliminado correctamente";
+    }
+
+    public String actualizarEstado(String ticketId, int estado) {
+
+        EstadoTicket nuevoEstado = switch (estado) {
+            case 1 -> EstadoTicket.EN_PROGRESO;
+            case 2 -> EstadoTicket.RESUELTO;
+            default -> null;
+        };
+
+        boolean res = gd.actualizarEstadoTicket(ticketId, nuevoEstado);
+
+        if (!res) {
+            return "No se ha logrado actualizar el ticket";
+        }
+
+        return  "Ticket actualizado correctamente";
     }
 }

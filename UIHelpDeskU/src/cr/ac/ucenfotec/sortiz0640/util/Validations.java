@@ -103,5 +103,37 @@ public class Validations {
         return asunto;
     }
 
+    public String ticketId() throws IOException {
+
+        String nombre;
+
+        do {
+
+            interfaz.imprimirMensaje("Ingrese la identificación del ticket: ");
+            nombre = interfaz.leerTexto();
+
+            if (nombre == null ||  nombre.isBlank()) {
+                interfaz.imprimirMensaje("El nombre no puede estar vacio. ");
+            }
+
+        } while (nombre == null ||  nombre.isBlank());
+
+        return nombre;
+    }
+
+    public int estado() throws IOException {
+        int estado;
+        do {
+
+            interfaz.imprimirMensaje("Seleccione un estado [1 - EN PROGRESO ][2 - RESUELTO ]");
+            estado = interfaz.leerOpcion();
+
+            if (estado < 1 || estado > 3) {
+                interfaz.imprimirMensaje("Opción invalida. Intente nuevamente ");
+            }
+        } while (estado < 1 || estado > 3);
+
+        return estado;
+    }
 
 }

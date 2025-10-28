@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class Ticket {
 
-    private String id; // Formato "TI-0000"
+    private String id; // Formato "TI-00000"
     private String asunto;
     private String descripcion;
     private EstadoTicket estado;
@@ -61,6 +61,12 @@ public class Ticket {
 
     @Override
     public String toString() {
-        return "[ID: " + getId() + "]" + "[Asunto: " + getAsunto() + "]" +  "[Descripción: " + getDescripcion() + "]" + "[Estado: " + getEstado() + "]";
+        return "[ID: " + getId() + "]"
+                + "[Asunto: " + getAsunto()
+                + "]" +  "[Descripción: "
+                + getDescripcion() + "]"
+                + "[Estado: "
+                + getEstado() + "]"
+                + "[Correo Creador: " + getCorreoUsuarioCreador() + "]";
     }
 }

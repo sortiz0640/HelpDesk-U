@@ -2,6 +2,7 @@ package cr.ac.ucenfotec.sortiz0640.bl.logic;
 
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
+import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
 import cr.ac.ucenfotec.sortiz0640.dl.DataDepartamento;
 
 import java.util.ArrayList;
@@ -81,5 +82,9 @@ public class GestorDepartamento {
     public boolean eliminarTicketPorId(String ticketId) {
 
         return db.eliminarTicketPorId(ticketId);
+    }
+
+    public boolean actualizarEstadoTicket(String correo, EstadoTicket estado) {
+        return db.actualizarEstadoTicket(correo, estado);
     }
 }
