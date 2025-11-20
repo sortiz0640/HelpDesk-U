@@ -1,20 +1,22 @@
 package cr.ac.ucenfotec.sortiz0640.tl;
-import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorSesion;
+
+import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorApp;
 import cr.ac.ucenfotec.sortiz0640.ui.ViewSesion;
 import cr.ac.ucenfotec.sortiz0640.util.UI;
 import cr.ac.ucenfotec.sortiz0640.util.Validations;
+
 import java.io.IOException;
 
 public class ControllerSesion {
 
-    private UI interfaz = new UI(); // Clase de métodos para lectura y escritura en consola
+    private UI interfaz = new UI();
     private ViewSesion app = new ViewSesion();
     private Validations validator = new Validations();
-    private GestorSesion sesion;
+    private GestorApp gestorApp;
     private ControllerApp controllerApp;
 
-    public ControllerSesion(GestorSesion sesion, ControllerApp controllerApp) {
-        this.sesion = sesion;
+    public ControllerSesion(GestorApp gestorApp, ControllerApp controllerApp) {
+        this.gestorApp = gestorApp;
         this.controllerApp = controllerApp;
     }
 
@@ -40,16 +42,15 @@ public class ControllerSesion {
         String correo = validator.correo();
         String password = validator.password();
 
-        boolean estado = sesion.iniciarSesion(correo, password);
+        boolean estado = gestorApp.iniciarSesion(correo, password);
 
         if (!estado) {
-            interfaz.imprimirMensaje("[INFO] El usuario o la contraseña no son correctos. Intente nuevamente");
+            interfaz.imprimirMensaje("[INFO] El usuario o la contraseña no son correctos. Intente nuevamente\n");
             return;
         }
 
-        interfaz.imprimirMensaje("[INFO] Sesión iniciada correctamente");
+        interfaz.imprimirMensaje("[INFO] Sesión iniciada correctamente\n");
 
-        // Arranca el menu principal
         controllerApp.start();
     }
 }

@@ -1,29 +1,22 @@
 package cr.ac.ucenfotec.sortiz0640.tl;
-import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorDepartamento;
-import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorSesion;
-import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorTicket;
+
+import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorApp;
 import cr.ac.ucenfotec.sortiz0640.ui.ViewTicket;
 import cr.ac.ucenfotec.sortiz0640.util.UI;
 import cr.ac.ucenfotec.sortiz0640.util.Validations;
+
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ControllerTicket {
 
     private UI interfaz = new UI();
     private ViewTicket app = new ViewTicket();
-    private GestorTicket g;
-    private GestorSesion sesion;
-    private GestorDepartamento departamento;
-    private ControllerDepartamento controllerDepartamento;
+    private GestorApp gestorApp;
     private Validations validator = new Validations();
 
-    public ControllerTicket(GestorTicket g, GestorSesion sesion, ControllerDepartamento controllerDepartamento, GestorDepartamento departamento) {
-        this.g = g;
-        this.sesion = sesion;
-        this.controllerDepartamento = controllerDepartamento;
-        this.departamento = departamento;
+    public ControllerTicket(GestorApp gestorApp) {
+        this.gestorApp = gestorApp;
     }
 
     public void start() throws IOException {
@@ -38,10 +31,10 @@ public class ControllerTicket {
     public void procesarOpcion(int opcion) throws IOException {
         switch (opcion) {
             case 1: crear(); break;
-            case 2: misTickets(); break;
+            case 2: listarMisTickets(); break;
             case 3: eliminar(); break;
             case 4: actualizarEstado(); break;
-            case 5: listarTodosPorDepartamento(); break;
+            case 5: listarTicketsPorDepartamento(); break;
             case 0: break;
             default: interfaz.imprimirMensaje("[INFO] Opción no válida. Intente nuevamente! \n");
         }
@@ -49,92 +42,131 @@ public class ControllerTicket {
 
     public void crear() throws IOException {
 
-        if (!departamento.existenDepartamentos()) {
-            interfaz.imprimirMensaje("[INFO] No existen departamentos registrados. No es posible crear un Ticket en este momento.\n");
+        if (!gestorApp.existenDepartamentos()) {
+            interfaz.imprimirMensaje("[INFO] No existen departamentos registrados. Debe registrar al menos un departamento antes de crear tickets\n");
             return;
         }
 
         String asunto = validator.asunto();
         String descripcion = validator.descripcion();
 
-        controllerDepartamento.listarTodos();
+        // Mostrar departamentos disponibles
+        interfaz.imprimirMensaje("\n[INFO] Departamentos disponibles:\n");
+        mostrarDepartamentos();
 
-        interfaz.imprimirMensaje("\nDigite el correo del departamento encargado");;
         String correoDepartamento = validator.correo();
 
-        interfaz.imprimirMensaje(g.crear(asunto, descripcion, correoDepartamento, sesion.getCorreo()));
-
+        String resultado = gestorApp.crearTicket(asunto, descripcion, correoDepartamento);
+        interfaz.imprimirMensaje(resultado);
     }
 
-    public void misTickets() throws IOException {
+    public void listarMisTickets() {
 
-        ArrayList<String> misTickets = g.listarMisTickets(sesion.getCorreo());
+        String correoUsuario = gestorApp.obtenerCorreoUsuarioActual();
+        ArrayList<String> lista = gestorApp.listarTicketsPorUsuario(correoUsuario);
 
-        if (misTickets == null || misTickets.isEmpty()) {
-            interfaz.imprimirMensaje("[INFO] No existen tickets registrados\n");
+        if (lista == null || lista.isEmpty()) {
+            interfaz.imprimirMensaje("[INFO] No tienes tickets creados\n");
             return;
         }
 
-        interfaz.imprimirMensaje("[INFO] Lista de tickets: \n");
-        for (String t : misTickets) {
-            interfaz.imprimirMensaje(t);
+        interfaz.imprimirMensaje("[INFO] Tus tickets:\n");
+        for (String ticket : lista) {
+            interfaz.imprimirMensaje(ticket);
+        }
+    }
+
+    public void listarTicketsPorDepartamento() throws IOException {
+
+        if (!gestorApp.tienePermisosAdmin()) {
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
+            return;
         }
 
+        if (!gestorApp.existenDepartamentos()) {
+            interfaz.imprimirMensaje("[INFO] No existen departamentos registrados\n");
+            return;
+        }
+
+        // Mostrar departamentos disponibles
+        interfaz.imprimirMensaje("\n[INFO] Departamentos disponibles:\n");
+        mostrarDepartamentos();
+
+        String correoDepartamento = validator.correo();
+        ArrayList<String> lista = gestorApp.listarTicketsPorDepartamento(correoDepartamento);
+
+        if (lista == null || lista.isEmpty()) {
+            interfaz.imprimirMensaje("[INFO] El departamento no tiene tickets asignados\n");
+            return;
+        }
+
+        interfaz.imprimirMensaje("\n[INFO] Tickets del departamento:\n");
+        for (String ticket : lista) {
+            interfaz.imprimirMensaje(ticket);
+        }
     }
 
     public void eliminar() throws IOException {
 
-        if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
+        String ticketId = solicitarTicketId();
+
+        if (ticketId == null) {
             return;
         }
 
-        String ticketId = validator.ticketId();
-        interfaz.imprimirMensaje(g.eliminar(ticketId));
+        interfaz.imprimirMensaje(gestorApp.eliminarTicket(ticketId));
     }
 
     public void actualizarEstado() throws IOException {
 
-        if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
+        String ticketId = solicitarTicketId();
+
+        if (ticketId == null) {
             return;
         }
 
-        String ticketId = validator.ticketId();
         int estado = validator.estado();
-        interfaz.imprimirMensaje(g.actualizarEstado(ticketId, estado));
+        interfaz.imprimirMensaje(gestorApp.actualizarEstadoTicket(ticketId, estado));
     }
 
+    // Métodos auxiliares
 
-    public void listarTodosPorDepartamento() throws IOException {
+    private void mostrarDepartamentos() {
+        ArrayList<String> departamentos = gestorApp.listarTodosDepartamentos();
 
-        if (!sesion.tienePermisosAdmin()) {
+        for (String departamento : departamentos) {
+            interfaz.imprimirMensaje(departamento);
+        }
+        interfaz.imprimirMensaje("\n");
+    }
+
+    private void mostrarTodosTickets() {
+        ArrayList<String> tickets = gestorApp.listarTodosTickets();
+
+        for (String ticket : tickets) {
+            interfaz.imprimirMensaje(ticket);
+        }
+
+        interfaz.imprimirMensaje("\n");
+    }
+
+    private String solicitarTicketId() throws IOException {
+
+        if (!gestorApp.tienePermisosAdmin()) {
             interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
-            return;
+            return null;
         }
 
-        ArrayList<String> listaDepartamentos = departamento.listarTodos();
-
-        interfaz.imprimirMensaje("[INFO] Lista de departamentos: \n");
-        for (String u : listaDepartamentos) {
-            interfaz.imprimirMensaje(u);
+        if (!gestorApp.existenTickets()) {
+            interfaz.imprimirMensaje("[INFO] No hay tickets registrados\n");
+            return null;
         }
 
-        interfaz.imprimirMensaje("\nIngrese el correo del departamento para mostrar sus tickets");
-        String correo = validator.correo();
+        // Mostrar todos los tickets
+        interfaz.imprimirMensaje("\n[INFO] Tickets registrados:\n");
+        mostrarTodosTickets();
 
-
-        ArrayList<String> listaTickets = g.listarTodosPorDepartamento(correo);
-
-        if (listaTickets == null || listaTickets.isEmpty()) {
-            interfaz.imprimirMensaje("[INFO] El departamento no existe/no tiene tickets registrados\n");
-            return;
-        }
-
-        interfaz.imprimirMensaje("[INFO] Lista de tickets: \n");
-        for (String u : listaTickets) {
-            interfaz.imprimirMensaje(u);
-        }
+        return validator.ticketId();
 
     }
 }

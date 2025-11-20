@@ -8,14 +8,16 @@ public class Ticket {
     private String asunto;
     private String descripcion;
     private EstadoTicket estado;
-    private String correoUsuarioCreador;
+    private Usuario usuario;
+    private Departamento departamento;
 
-    public Ticket(String asunto, String descripcion, String correoUsuarioCreador) {
+    public Ticket(String asunto, String descripcion, Usuario usuario, Departamento departamento) {
         this.id = generarId();
         this.asunto = asunto;
         this.descripcion = descripcion;
         this.estado = EstadoTicket.NUEVO; // todos los tickets se crean por default con el estado NUEVO
-        this.correoUsuarioCreador = correoUsuarioCreador;
+        this.usuario = usuario;
+        this.departamento = departamento;
     }
 
     public String getAsunto() {
@@ -53,8 +55,24 @@ public class Ticket {
         return id;
     }
 
-    public String getCorreoUsuarioCreador() {
-        return correoUsuarioCreador;
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
@@ -65,6 +83,6 @@ public class Ticket {
                 + getDescripcion() + "]"
                 + "[Estado: "
                 + getEstado() + "]"
-                + "[Correo Creador: " + getCorreoUsuarioCreador() + "]";
+                + "[Correo Creador: " + getUsuario().getCorreo() + "]";
     }
 }

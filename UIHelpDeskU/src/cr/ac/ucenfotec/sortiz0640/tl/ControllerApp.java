@@ -1,5 +1,6 @@
 package cr.ac.ucenfotec.sortiz0640.tl;
-import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorSesion;
+
+import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorApp;
 import cr.ac.ucenfotec.sortiz0640.ui.ViewApp;
 import cr.ac.ucenfotec.sortiz0640.util.UI;
 
@@ -7,19 +8,19 @@ import java.io.IOException;
 
 public class ControllerApp {
 
-    private UI interfaz = new UI(); // Clase de métodos para lectura y escritura en consola
+    private UI interfaz = new UI();
     private ViewApp app = new ViewApp();
-
     private ControllerUsuario usuario;
     private ControllerTicket ticket;
     private ControllerDepartamento departamento;
-    private GestorSesion sesion;
+    private GestorApp gestorApp;
 
-    public ControllerApp(ControllerUsuario usuario, ControllerTicket ticket, ControllerDepartamento departamento, GestorSesion sesion)  {
+    public ControllerApp(ControllerUsuario usuario, ControllerTicket ticket,
+                         ControllerDepartamento departamento, GestorApp gestorApp) {
         this.usuario = usuario;
         this.ticket = ticket;
         this.departamento = departamento;
-        this.sesion = sesion;
+        this.gestorApp = gestorApp;
     }
 
     public void start() throws IOException {
@@ -36,7 +37,7 @@ public class ControllerApp {
             case 1: usuario.start(); break;
             case 2: departamento.start(); break;
             case 3: ticket.start(); break;
-            case 0: sesion.cerrarSesion(); break;
+            case 0: gestorApp.cerrarSesion(); break;
             default: interfaz.imprimirMensaje("[INFO] Opción no válida. Intente nuevamente! \n");
         }
     }

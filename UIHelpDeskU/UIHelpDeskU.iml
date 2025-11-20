@@ -8,8 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="HelpDeskU" exported="" />
-    <orderEntry type="library" name="guava-33.5.0-jre" level="project" />
-    <orderEntry type="library" name="commons-validator-1.10.0-sources" level="project" />
     <orderEntry type="library" exported="" name="commons-validator-1.10.0" level="project" />
   </component>
 </module>

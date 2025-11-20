@@ -1,63 +1,72 @@
 package cr.ac.ucenfotec.sortiz0640.dl;
+
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
+
 import java.util.ArrayList;
 
 public class DataUsuario {
 
-    private ArrayList<Usuario> usuarios;
+    private ArrayList<Usuario> listaUsuarios;
 
     public DataUsuario() {
-        usuarios = new ArrayList<>();
+        this.listaUsuarios = new ArrayList<>();
     }
 
-    // regresa true si el usuario se agrega correctamente
-    public boolean agregar(Usuario registro) {
-
-        for (Usuario u : usuarios) {
-            if (u.getCorreo().equals(registro.getCorreo())) {
+    public boolean agregar(Usuario usuario) {
+        // Verificar si ya existe un usuario con el mismo correo
+        for (Usuario u : listaUsuarios) {
+            if (u.getCorreo().equals(usuario.getCorreo())) {
                 return false;
             }
         }
 
-        return usuarios.add(registro);
+        listaUsuarios.add(usuario);
+        return true;
     }
 
-    // regresa true si es usuario se elimina correctamente
     public boolean eliminarPorCorreo(String correo) {
-
-        for (Usuario u: usuarios) {
-            if (u.getCorreo().equals(correo)) {
-                return usuarios.remove(u);
+        for (Usuario usuario : listaUsuarios) {
+            if (usuario.getCorreo().equals(correo)) {
+                listaUsuarios.remove(usuario);
+                return true;
             }
         }
         return false;
     }
 
     public String listarPorCorreo(String correo) {
-        for (Usuario u: usuarios) {
-            if (u.getCorreo().equals(correo)) {
-                return u.toString();
+        for (Usuario usuario : listaUsuarios) {
+            if (usuario.getCorreo().equals(correo)) {
+                return usuario.toString();
             }
         }
         return null;
     }
 
-    // Regresa un arreglo de objetos tipo String, siendo cada objeto el toString de cada usuario
     public ArrayList<String> listarTodos() {
-
-        if (usuarios.isEmpty()) {
-            return null;
-        }
-
         ArrayList<String> lista = new ArrayList<>();
-        for (Usuario u : usuarios) {
-            lista.add(u.toString());
+
+        for (Usuario usuario : listaUsuarios) {
+            lista.add(usuario.toString());
         }
+
         return lista;
     }
 
-    public ArrayList<Usuario> getUsuarios() {
-        return usuarios;
+    public Usuario buscarPorCorreo(String correo) {
+        for (Usuario usuario : listaUsuarios) {
+            if (usuario.getCorreo().equals(correo)) {
+                return usuario;
+            }
+        }
+        return null;
     }
 
+    public boolean existePorCorreo(String correo) {
+        return buscarPorCorreo(correo) != null;
+    }
+
+    public ArrayList<Usuario> obtenerUsuarios() {
+        return listaUsuarios;
+    }
 }

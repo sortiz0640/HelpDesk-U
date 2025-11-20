@@ -11,7 +11,7 @@ public class GestorUsuario {
     private DataUsuario db;
 
     public GestorUsuario() {
-        db  = new DataUsuario();
+        db = new DataUsuario();
     }
 
     public String agregar(String nombre, String apellidos, String correo, String password, int rolEntrada) {
@@ -23,39 +23,53 @@ public class GestorUsuario {
             default -> null;
         };
 
-        Usuario tmpUsuario = new Usuario(nombre, apellidos, correo, password, rol);
-        boolean res = db.agregar(tmpUsuario);
+        if (rol == null) {
+            return "[ERR] Rol inválido";
+        }
 
-        if (!res) {
+        Usuario tmpUsuario = new Usuario(nombre, apellidos, correo, password, rol);
+        boolean resultado = db.agregar(tmpUsuario);
+
+        if (!resultado) {
             return "[ERR] El correo del usuario ya se encuentra registrado!";
         }
+
         return "[INFO] Usuario agregado correctamente";
-
-    }
-
-    public String listarPorCorreo(String correo) {
-        String res = db.listarPorCorreo(correo);
-        if (res == null) {
-            return "[ERR] El usuario especificado no existe";
-        }
-        return res;
     }
 
     public String eliminarPorCorreo(String correo) {
+        boolean resultado = db.eliminarPorCorreo(correo);
 
-        boolean res = db.eliminarPorCorreo(correo);
-        if (!res) {
+        if (!resultado) {
             return "[ERR] El usuario especificado no existe";
         }
-        return "[INFO] Usuario eliminado correctamente";
 
+        return "[INFO] Usuario eliminado correctamente";
     }
 
-    public ArrayList<Usuario> getUsuarios() {
-        return db.getUsuarios();
+    public String listarPorCorreo(String correo) {
+        String resultado = db.listarPorCorreo(correo);
+
+        if (resultado == null) {
+            return "[ERR] El usuario especificado no existe";
+        }
+
+        return resultado;
     }
 
     public ArrayList<String> listarTodos() {
         return db.listarTodos();
+    }
+
+    public Usuario buscarPorCorreo(String correo) {
+        return db.buscarPorCorreo(correo);
+    }
+
+    public boolean existePorCorreo(String correo) {
+        return db.existePorCorreo(correo);
+    }
+
+    public ArrayList<Usuario> obtenerUsuarios() {
+        return db.obtenerUsuarios();
     }
 }

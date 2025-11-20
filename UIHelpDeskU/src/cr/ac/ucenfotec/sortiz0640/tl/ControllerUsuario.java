@@ -1,7 +1,6 @@
 package cr.ac.ucenfotec.sortiz0640.tl;
 
-import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorSesion;
-import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorUsuario;
+import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorApp;
 import cr.ac.ucenfotec.sortiz0640.ui.ViewUsuario;
 import cr.ac.ucenfotec.sortiz0640.util.UI;
 import cr.ac.ucenfotec.sortiz0640.util.Validations;
@@ -11,15 +10,13 @@ import java.util.ArrayList;
 
 public class ControllerUsuario {
 
-    private UI interfaz = new UI(); // Clase de métodos para lectura y escritura en consola
+    private UI interfaz = new UI();
     private ViewUsuario app = new ViewUsuario();
-    private GestorUsuario g;
-    private GestorSesion sesion;
-    Validations validator = new Validations();
+    private GestorApp gestorApp;
+    private Validations validator = new Validations();
 
-    public ControllerUsuario(GestorUsuario g, GestorSesion sesion) {
-        this.g = g;
-        this.sesion = sesion;
+    public ControllerUsuario(GestorApp gestorApp) {
+        this.gestorApp = gestorApp;
     }
 
     public void start() throws IOException {
@@ -34,7 +31,7 @@ public class ControllerUsuario {
     public void procesarOpcion(int opcion) throws IOException {
         switch (opcion) {
             case 1: registrar(); break;
-            case 2: eliminarPorCorreo(); break;
+            case 2: eliminar(); break;
             case 3: listarPorCorreo(); break;
             case 4: listarTodos(); break;
             case 0: break;
@@ -44,8 +41,8 @@ public class ControllerUsuario {
 
     public void registrar() throws IOException {
 
-        if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción");
+        if (!gestorApp.tienePermisosAdmin()) {
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
@@ -55,51 +52,66 @@ public class ControllerUsuario {
         String password = validator.password();
         int rol = validator.rol();
 
-        interfaz.imprimirMensaje(g.agregar(nombre, apellidos, correo, password, rol));
-
+        interfaz.imprimirMensaje(gestorApp.agregarUsuario(nombre, apellidos, correo, password, rol));
     }
 
-    public void eliminarPorCorreo() throws IOException {
+    public void eliminar() throws IOException {
 
-        if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción");
+        if (!gestorApp.tienePermisosAdmin()) {
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
-        String correo = validator.correo();
-        interfaz.imprimirMensaje(g.eliminarPorCorreo(correo));
+        // Mostrar usuarios disponibles
+        interfaz.imprimirMensaje("\n[INFO] Usuarios registrados:\n");
+        mostrarUsuarios();
 
+        String correo = validator.correo();
+        interfaz.imprimirMensaje(gestorApp.eliminarUsuario(correo));
     }
 
     public void listarPorCorreo() throws IOException {
 
-        if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción");
+        if (!gestorApp.tienePermisosAdmin()) {
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
         String correo = validator.correo();
-        interfaz.imprimirMensaje(g.listarPorCorreo(correo));
-
+        interfaz.imprimirMensaje("\n" + gestorApp.listarUsuarioPorCorreo(correo));
     }
 
     public void listarTodos() {
 
-        if (!sesion.tienePermisosAdmin()) {
-            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción");
+        if (!gestorApp.tienePermisosAdmin()) {
+            interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
-        ArrayList<String> lista = g.listarTodos();
+        ArrayList<String> lista = gestorApp.listarTodosUsuarios();
 
         if (lista == null || lista.isEmpty()) {
-            interfaz.imprimirMensaje("No existen usuarios registrados");
+            interfaz.imprimirMensaje("[INFO] No existen usuarios registrados\n");
             return;
         }
 
-        interfaz.imprimirMensaje("[INFO] Lista de usuarios registrados: \n");
-        for (String u : lista) {
-            interfaz.imprimirMensaje(u);
+        interfaz.imprimirMensaje("[INFO] Lista de usuarios registrados:\n");
+        for (String usuario : lista) {
+            interfaz.imprimirMensaje(usuario);
         }
+    }
+
+    private void mostrarUsuarios() {
+        ArrayList<String> usuarios = gestorApp.listarTodosUsuarios();
+
+        if (usuarios == null || usuarios.isEmpty()) {
+            interfaz.imprimirMensaje("[INFO] No hay usuarios registrados\n");
+            return;
+        }
+
+        for (String usuario : usuarios) {
+            interfaz.imprimirMensaje(usuario);
+        }
+        interfaz.imprimirMensaje("\n");
     }
 }

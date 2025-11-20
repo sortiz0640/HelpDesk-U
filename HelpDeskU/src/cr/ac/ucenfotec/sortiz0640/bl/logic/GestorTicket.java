@@ -1,75 +1,76 @@
 package cr.ac.ucenfotec.sortiz0640.bl.logic;
+
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
+import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
+import cr.ac.ucenfotec.sortiz0640.dl.DataTicket;
 
 import java.util.ArrayList;
 
 public class GestorTicket {
 
-    GestorDepartamento gd;
+    private DataTicket db;
 
-    public GestorTicket(GestorDepartamento gd) {
-        this.gd = gd;
+    public GestorTicket() {
+        db = new DataTicket();
     }
 
-    public String crear(String asunto, String descripcion, String correoDepartamento, String correoUsuarioCreador) {
+    public String agregar(String asunto, String descripcion, Usuario usuario, Departamento departamento) {
+        Ticket nuevoTicket = new Ticket(asunto, descripcion, usuario, departamento);
+        boolean resultado = db.agregar(nuevoTicket);
 
-        Ticket tmpTicket = new Ticket(asunto, descripcion, correoUsuarioCreador);
-
-        if (!gd.existePorCorreo(correoDepartamento)) {
-            return "[ERR] El correo especificado no pertenece a ningún departamento. Intente nuevamente";
+        if (!resultado) {
+            return "[ERR] Error al crear el ticket";
         }
 
-        // El departamento guarda el ticket creado
-        agregarTicketDepartamento(tmpTicket, correoDepartamento);
-        return "[INFO] El ticket ha sido creado con éxito.\n" + tmpTicket.toString() ;
+        return "[INFO] El ticket ha sido creado con éxito.\n" + nuevoTicket.toString();
     }
 
-    public void agregarTicketDepartamento(Ticket tmpTicket, String correoDepartamento) {
-        gd.agregarTicket(tmpTicket, correoDepartamento);
-    }
+    public String eliminarPorId(String ticketId) {
+        boolean resultado = db.eliminarPorId(ticketId);
 
-    public ArrayList<String> listarTodosPorDepartamento(String correo) {
-
-        Departamento tmpDepartamento = gd.buscarPorCorreo(correo);
-
-        if (tmpDepartamento != null) {
-            return tmpDepartamento.listarTickets();
-        }
-
-        return null;
-    }
-
-    public ArrayList<String> listarMisTickets(String correoUsuarioCreador) {
-        return gd.listarTicketsPorCorreo(correoUsuarioCreador);
-    }
-
-    public String eliminar(String ticketId) {
-
-        boolean res = gd.eliminarTicketPorId(ticketId);
-
-        if (!res) {
+        if (!resultado) {
             return "[ERR] El ticket especificado no existe. Intente nuevamente";
         }
 
         return "[INFO] Ticket eliminado correctamente";
     }
 
-    public String actualizarEstado(String ticketId, int estado) {
+    public String actualizarEstado(String ticketId, EstadoTicket nuevoEstado) {
+        boolean resultado = db.actualizarEstado(ticketId, nuevoEstado);
 
-        EstadoTicket nuevoEstado = switch (estado) {
-            case 1 -> EstadoTicket.EN_PROGRESO;
-            case 2 -> EstadoTicket.RESUELTO;
-            default -> null;
-        };
-
-        boolean res = gd.actualizarEstadoTicket(ticketId, nuevoEstado);
-
-        if (!res) {
-            return "[ERR] El Ticket especificado no existe. Intente nuevamente.";
+        if (!resultado) {
+            return "[ERR] El ticket especificado no existe. Intente nuevamente.";
         }
 
-        return  "[INFO] Ticket actualizado correctamente";
+        return "[INFO] Ticket actualizado correctamente";
+    }
+
+    public ArrayList<String> listarTodos() {
+        return db.listarTodos();
+    }
+
+    public ArrayList<String> listarPorDepartamento(String correoDepartamento) {
+        return db.listarPorDepartamento(correoDepartamento);
+    }
+
+    public ArrayList<String> listarPorUsuario(String correoUsuario) {
+        return db.listarPorUsuario(correoUsuario);
+    }
+
+    public Ticket buscarPorId(String ticketId) {
+        return db.buscarPorId(ticketId);
+    }
+
+    public boolean existePorId(String ticketId) {
+        return db.existePorId(ticketId);
+    }
+
+    public boolean existenTickets() {
+        return db.existenTickets();
+    }
+    public void eliminarPorCorreoDepartamento(String correoDepartamento) {
+        db.eliminarPorCorreoDepartamento(correoDepartamento);
     }
 }

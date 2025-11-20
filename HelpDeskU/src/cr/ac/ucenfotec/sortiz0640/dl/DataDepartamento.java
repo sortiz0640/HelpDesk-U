@@ -1,152 +1,82 @@
 package cr.ac.ucenfotec.sortiz0640.dl;
-import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
-import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
-import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
 
-import java.lang.reflect.Array;
+import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
+
 import java.util.ArrayList;
 
 public class DataDepartamento {
 
-    private ArrayList<Departamento> departamentos;
+    private ArrayList<Departamento> listaDepartamentos;
 
     public DataDepartamento() {
-        departamentos = new ArrayList<>();
+        this.listaDepartamentos = new ArrayList<>();
     }
 
-    // regresa true si el departamento se agrega correctamente
-    public boolean agregar(Departamento registro) {
-
-        for (Departamento d : departamentos) {
-            if (d.getCorreo().equals(registro.getCorreo())) {
-                return false;
-            }
-
-            if (d.getNombre().equals(registro.getNombre())) {
+    public boolean agregar(Departamento departamento) {
+        // Verificar si ya existe un departamento con el mismo correo o nombre
+        for (Departamento d : listaDepartamentos) {
+            if (d.getCorreo().equals(departamento.getCorreo()) ||
+                    d.getNombre().equals(departamento.getNombre())) {
                 return false;
             }
         }
 
-        return departamentos.add(registro);
+        listaDepartamentos.add(departamento);
+        return true;
     }
 
-    // regresa true si el departamento se elimina correctamente
     public boolean eliminarPorCorreo(String correo) {
-        return departamentos.removeIf(departamento -> departamento.getCorreo().equals(correo));
-    }
-
-    public String listarPorCorreo(String correo) {
-        for  (Departamento d : departamentos) {
-            if (d.getCorreo().equals(correo)) {
-                return d.toString();
-            }
-        }
-        return null;
-    }
-
-    // Regresa un arreglo de objetos tipo String, siendo cada objeto el toString de cada departamento
-    public ArrayList<String> listarTodos() {
-
-        ArrayList<String> lista = new ArrayList<>();
-        for (Departamento d : departamentos) {
-            lista.add(d.toString());
-        }
-        return lista;
-    }
-
-    // Regresa un true si el correo pertenece a un departamento registrado
-    public boolean existePorCorreo(String correo) {
-        for (Departamento d : departamentos) {
-            if (d.getCorreo().equals(correo)) {
+        for (Departamento departamento : listaDepartamentos) {
+            if (departamento.getCorreo().equals(correo)) {
+                listaDepartamentos.remove(departamento);
                 return true;
             }
         }
-
         return false;
     }
 
+    public boolean existePorCorreo(String correo) {
+        for (Departamento departamento : listaDepartamentos) {
+            if (departamento.getCorreo().equals(correo)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-    // Devuelve un objeto tipo Departamento según el correo proporcionado
-    public Departamento getDepartamentoPorCorreo(String correo) {
-        for (Departamento d : departamentos) {
-            if (d.getCorreo().equals(correo)) {
-                return d;
+    public String listarPorCorreo(String correo) {
+        for (Departamento departamento : listaDepartamentos) {
+            if (departamento.getCorreo().equals(correo)) {
+                return departamento.toString();
             }
         }
         return null;
     }
 
-    // Agrega un nuevo ticket a un Departamento según su correo
-    public void agregarTicket(Ticket ticket, String correo) {
+    public ArrayList<String> listarTodos() {
+        ArrayList<String> lista = new ArrayList<>();
 
-        Departamento tmpDepartamento = getDepartamentoPorCorreo(correo);
-
-        if (tmpDepartamento == null) {
-            return;
-        }
-
-        tmpDepartamento.agregarTicket(ticket);
-        actualizarDepartamento(correo, tmpDepartamento);
-
-    }
-
-    public boolean existenDepartamentos() {
-        return !departamentos.isEmpty();
-    }
-
-    public void actualizarDepartamento(String correo, Departamento tmpDepartamento) {
-        for (int d = 0; d < departamentos.size(); d++) {
-            if (departamentos.get(d).getCorreo().equals(correo)) {
-                departamentos.set(d, tmpDepartamento);
-                break;
-            }
-        }
-    }
-
-    public ArrayList<String> listarTicketsPorCorreo(String correo) {
-        ArrayList<String> lista = new ArrayList<>(); // siempre inicializada
-
-        for (Departamento d : departamentos) {
-            if (d.getListaTickets() != null) {
-                for (Ticket t : d.getListaTickets()) {
-                    if (t.getCorreoUsuarioCreador().equals(correo)) {
-                        lista.add(t.toString());
-                    }
-                }
-            }
+        for (Departamento departamento : listaDepartamentos) {
+            lista.add(departamento.toString());
         }
 
         return lista;
     }
 
-    public boolean eliminarTicketPorId(String ticketId) {
-
-        for (Departamento d : departamentos) {
-            if (d.getListaTickets() != null) {
-                for (Ticket t : d.getListaTickets()) {
-                    if (t.getId().equals(ticketId)) {
-                        d.eliminarTicket(ticketId);
-                        return true;
-                    }
-                }
+    public Departamento buscarPorCorreo(String correo) {
+        for (Departamento departamento : listaDepartamentos) {
+            if (departamento.getCorreo().equals(correo)) {
+                return departamento;
             }
         }
-
-        return false;
+        return null;
     }
 
-    public boolean actualizarEstadoTicket(String ticketId, EstadoTicket estado) {
-        for (Departamento d : departamentos) {
-            if (d.getListaTickets() != null) {
-                for (Ticket t : d.getListaTickets()) {
-                    if (t.getId().equals(ticketId)) {
-                        d.actualizarEstadoTicket(ticketId, estado);
-                        return true;
-                    }
-                }
-            }
-        }
+    public boolean existenDepartamentos() {
+        return !listaDepartamentos.isEmpty();
+    }
 
-        return false;
+    public ArrayList<Departamento> obtenerDepartamentos() {
+        return listaDepartamentos;
     }
 }

@@ -1,23 +1,22 @@
 package cr.ac.ucenfotec.sortiz0640.tl;
-import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorDepartamento;
-import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorSesion;
+
+import cr.ac.ucenfotec.sortiz0640.bl.logic.GestorApp;
 import cr.ac.ucenfotec.sortiz0640.ui.ViewDepartamento;
 import cr.ac.ucenfotec.sortiz0640.util.UI;
 import cr.ac.ucenfotec.sortiz0640.util.Validations;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class ControllerDepartamento {
 
-    private UI interfaz = new UI(); // Clase de métodos para lectura y escritura en consola
+    private UI interfaz = new UI();
     private ViewDepartamento app = new ViewDepartamento();
-    private GestorDepartamento g;
-    private GestorSesion sesion;
+    private GestorApp gestorApp;
     private Validations validator = new Validations();
 
-    public ControllerDepartamento(GestorDepartamento g, GestorSesion sesion) {
-        this.g = g;
-        this.sesion = sesion;
+    public ControllerDepartamento(GestorApp gestorApp) {
+        this.gestorApp = gestorApp;
     }
 
     public void start() throws IOException {
@@ -32,7 +31,7 @@ public class ControllerDepartamento {
     public void procesarOpcion(int opcion) throws IOException {
         switch (opcion) {
             case 1: registrar(); break;
-            case 2: eliminarPorCorreo(); break;
+            case 2: eliminar(); break;
             case 3: listarPorCorreo(); break;
             case 4: listarTodos(); break;
             case 0: break;
@@ -42,7 +41,7 @@ public class ControllerDepartamento {
 
     public void registrar() throws IOException {
 
-        if (!sesion.tienePermisosAdmin()) {
+        if (!gestorApp.tienePermisosAdmin()) {
             interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
@@ -51,37 +50,38 @@ public class ControllerDepartamento {
         String descripcion = validator.descripcion();
         String correo = validator.correo();
 
-        interfaz.imprimirMensaje(g.agregar(nombre, descripcion, correo));
-
+        interfaz.imprimirMensaje(gestorApp.agregarDepartamento(nombre, descripcion, correo));
     }
 
-    public void eliminarPorCorreo() throws IOException {
+    public void eliminar() throws IOException {
 
-        if (!sesion.tienePermisosAdmin()) {
+        if (!gestorApp.tienePermisosAdmin()) {
             interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
-        String correo = validator.correo();
-        interfaz.imprimirMensaje(g.eliminarPorCorreo(correo));
+        // Mostrar departamentos disponibles
+        interfaz.imprimirMensaje("\n[INFO] Departamentos registrados:\n");
+        mostrarDepartamentos();
 
+        String correo = validator.correo();
+        interfaz.imprimirMensaje(gestorApp.eliminarDepartamento(correo));
     }
 
     public void listarPorCorreo() throws IOException {
 
-        if (!sesion.tienePermisosAdmin()) {
+        if (!gestorApp.tienePermisosAdmin()) {
             interfaz.imprimirMensaje("[INFO] El usuario no tiene permisos para ejecutar esta opción\n");
             return;
         }
 
         String correo = validator.correo();
-        interfaz.imprimirMensaje("\n" +g.listarPorCorreo(correo));
-
+        interfaz.imprimirMensaje("\n" + gestorApp.listarDepartamentoPorCorreo(correo));
     }
 
     public void listarTodos() {
 
-        ArrayList<String> lista = g.listarTodos();
+        ArrayList<String> lista = gestorApp.listarTodosDepartamentos();
 
         if (lista == null || lista.isEmpty()) {
             interfaz.imprimirMensaje("[INFO] No existen departamentos registrados\n");
@@ -89,9 +89,23 @@ public class ControllerDepartamento {
         }
 
         interfaz.imprimirMensaje("[INFO] Lista de departamentos:\n");
-        for (String u : lista) {
-            interfaz.imprimirMensaje(u);
+        for (String departamento : lista) {
+            interfaz.imprimirMensaje(departamento);
         }
     }
 
+
+    private void mostrarDepartamentos() {
+        ArrayList<String> departamentos = gestorApp.listarTodosDepartamentos();
+
+        if (departamentos == null || departamentos.isEmpty()) {
+            interfaz.imprimirMensaje("[INFO] No hay departamentos registrados\n");
+            return;
+        }
+
+        for (String departamento : departamentos) {
+            interfaz.imprimirMensaje(departamento);
+        }
+        interfaz.imprimirMensaje("\n");
+    }
 }
