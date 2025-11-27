@@ -26,6 +26,10 @@ public class Departamento {
      * @param correo Correo electrónico único que identifica al departamento
      */
 
+    public Departamento() {
+
+    }
+
     public Departamento(String nombre, String descripcion, String correo) {
         this.nombre = nombre;
         this.descripcion = descripcion;

@@ -34,6 +34,10 @@ public class Ticket {
      * @param departamento Departamento al que se asigna el ticket
      */
 
+    public Ticket() {
+
+    }
+
     public Ticket(String asunto, String descripcion, Usuario usuario, Departamento departamento) {
         this.id = generarId();
         this.asunto = asunto;

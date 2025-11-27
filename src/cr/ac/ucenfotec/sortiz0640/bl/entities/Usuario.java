@@ -31,6 +31,10 @@ public class Usuario {
      * @param rol Rol asignado que determina los permisos (ADMIN, ESTUDIANTE, FUNCIONARIO)
      */
 
+    public Usuario() {
+
+    }
+
     public Usuario(String nombre, String apellidos, String correo, String password, ListaRoles rol) {
         this.nombre = nombre;
         this.apellidos = apellidos;
