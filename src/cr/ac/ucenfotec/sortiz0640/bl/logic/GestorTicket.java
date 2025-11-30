@@ -5,6 +5,8 @@ import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
 import cr.ac.ucenfotec.sortiz0640.dl.DataTicket;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -86,6 +88,7 @@ public class GestorTicket {
         return "[INFO] Ticket actualizado correctamente";
     }
 
+
     /**
      * Obtiene una lista con todos los tickets del sistema.
      *
@@ -97,15 +100,15 @@ public class GestorTicket {
     }
 
     /**
-     * Obtiene una lista de tickets asignados a un departamento específico.
+     * Obtiene una lista tipo Ticket con todos los tickets del sistema.
      *
-     * @param correoDepartamento Correo del departamento
-     * @return ArrayList con los tickets del departamento especificado
+     * @return ArrayList de objetos tipo Ticket
      */
 
-    public ArrayList<String> listarPorDepartamento(String correoDepartamento) {
-        return db.listarPorDepartamento(correoDepartamento);
+    public ArrayList<Ticket> obtenerTickets() {
+        return db.obtenerTickets();
     }
+
 
     /**
      * Obtiene una lista de tickets creados por un usuario específico.
@@ -159,5 +162,18 @@ public class GestorTicket {
 
     public void eliminarPorCorreoDepartamento(String correoDepartamento) {
         db.eliminarPorCorreoDepartamento(correoDepartamento);
+    }
+
+    public ArrayList<Ticket> obtenerTiquetesPorUsuario(String correoUsuario) {
+        ArrayList<Ticket> tiquetes = obtenerTickets();
+        ArrayList<Ticket> filtrados = new ArrayList<>();
+
+        for (Ticket ticket : tiquetes) {
+            if (ticket.getUsuario().getCorreo().equals(correoUsuario)) {
+                filtrados.add(ticket);
+            }
+        }
+
+        return filtrados;
     }
 }

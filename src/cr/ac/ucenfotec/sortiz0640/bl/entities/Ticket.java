@@ -1,6 +1,9 @@
 package cr.ac.ucenfotec.sortiz0640.bl.entities;
 
+import cr.ac.ucenfotec.sortiz0640.bl.analytics.CategorizarTiquete;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
+
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
@@ -23,6 +26,8 @@ public class Ticket {
     private EstadoTicket estado;
     private Usuario usuario;
     private Departamento departamento;
+    private String categoriaTecnica;
+    private String categoriaEmocional;
 
     /**
      * Constructor para crear un nuevo ticket.
@@ -45,6 +50,7 @@ public class Ticket {
         this.estado = EstadoTicket.NUEVO;
         this.usuario = usuario;
         this.departamento = departamento;
+        setCategorias(descripcion);
     }
 
     public String getAsunto() {
@@ -101,6 +107,22 @@ public class Ticket {
         this.id = id;
     }
 
+    public void setCategorias(String descripcion) {
+        CategorizarTiquete categorizador = new CategorizarTiquete();
+        String[] categorias = categorizador.inicCategorizacion(descripcion);
+        this.categoriaTecnica = categorias[0];
+        this.categoriaEmocional = categorias[1];
+    }
+
+    public String getCategoriaEmocional() {
+        return categoriaEmocional;
+    }
+
+    public String getCategoriaTecnica() {
+        return categoriaTecnica;
+    }
+
+
     /**
      * Genera una representación en texto del ticket con toda su información.
      *
@@ -110,12 +132,11 @@ public class Ticket {
     @Override
     public String toString() {
         return "[ID: " + getId() + "]"
-                + "[Asunto: " + getAsunto()
-                + "]" +  "[Descripción: "
-                + getDescripcion() + "]"
-                + "[Estado: "
-                + getEstado() + "]"
+                + "[Asunto: " + getAsunto() + "]"
+                + "[Descripción: " + getDescripcion() + "]"
+                + "[Estado: " + getEstado() + "]"
                 + "[Correo Creador: " + getUsuario().getCorreo() + "]";
+
     }
 
     /**

@@ -1,6 +1,7 @@
 package cr.ac.ucenfotec.sortiz0640.bl.logic;
 
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
+import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
 import java.io.IOException;
@@ -134,8 +135,13 @@ public class GestorApp {
      * @return ArrayList con la representación de todos los departamentos
      */
 
-    public ArrayList<String> listarTodosDepartamentos() {
-        return gestorDepartamento.listarTodos();
+    public ArrayList<String> obtenerDepartamentos() {
+
+        ArrayList<String> departamentos = new ArrayList<>();
+        for (Departamento d: gestorDepartamento.obtenerDepartamentos()) {
+            departamentos.add(d.getCorreo());
+        }
+        return departamentos;
     }
 
     /**
@@ -185,34 +191,39 @@ public class GestorApp {
         return resultado;
     }
 
-    /**
-     * Lista todos los tickets asignados a un departamento específico.
-     *
-     * @param correoDepartamento Correo del departamento
-     * @return ArrayList con los tickets del departamento
-     */
 
-    public ArrayList<String> listarTicketsPorDepartamento(String correoDepartamento) {
-        return gestorTicket.listarPorDepartamento(correoDepartamento);
+    public ArrayList<String[]> obtenerTodosTicketsFormato() {
+        ArrayList<Ticket> tickets = gestorTicket.obtenerTickets(); // O el método que tengas
+        return convertirTicketsAArray(tickets);
     }
 
-    /**
-     * Lista todos los tickets creados por un usuario específico.
-     *
-     * @param correoUsuario Correo del usuario
-     * @return ArrayList con los tickets del usuario
-     */
-
-    public ArrayList<String> listarTicketsPorUsuario(String correoUsuario) {
-        return gestorTicket.listarPorUsuario(correoUsuario);
+    public ArrayList<String[]> obtenerTicketsDelUsuarioFormato(String correoUsuario) {
+        ArrayList<Ticket> tickets = gestorTicket.obtenerTiquetesPorUsuario(correoUsuario);
+        return convertirTicketsAArray(tickets);
     }
 
-    /**
-     * Elimina un ticket del sistema por su ID.
-     *
-     * @param ticketId ID del ticket a eliminar
-     * @return Mensaje indicando éxito o error
-     */
+    private ArrayList<String[]> convertirTicketsAArray(ArrayList<Ticket> tickets) {
+        ArrayList<String[]> resultado = new ArrayList<>();
+
+        if (tickets == null || tickets.isEmpty()) {
+            return resultado;
+        }
+
+        for (Ticket ticket : tickets) {
+            String[] datos = {
+                    ticket.getId(),
+                    ticket.getAsunto(),
+                    ticket.getDepartamento().getCorreo(),
+                    ticket.getUsuario().getCorreo(),
+                    ticket.getCategoriaTecnica(),
+                    ticket.getCategoriaEmocional(),
+                    ticket.getEstado().toString()
+            };
+            resultado.add(datos);
+        }
+
+        return resultado;
+    }
 
     public String eliminarTicket(String ticketId) {
         return gestorTicket.eliminarPorId(ticketId);
@@ -240,25 +251,6 @@ public class GestorApp {
         return gestorTicket.actualizarEstado(ticketId, nuevoEstado);
     }
 
-    /**
-     * Lista todos los tickets registrados en el sistema.
-     *
-     * @return ArrayList con todos los tickets
-     */
-
-    public ArrayList<String> listarTodosTickets() {
-        return gestorTicket.listarTodos();
-    }
-
-    /**
-     * Verifica si existen tickets en el sistema.
-     *
-     * @return true si hay al menos un ticket registrado
-     */
-
-    public boolean existenTickets() {
-        return gestorTicket.existenTickets();
-    }
 
     // ============================================
     // OPERACIONES DE SESIÓN

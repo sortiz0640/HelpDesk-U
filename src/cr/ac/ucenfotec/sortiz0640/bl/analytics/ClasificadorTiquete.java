@@ -1,7 +1,6 @@
 package cr.ac.ucenfotec.sortiz0640.bl.analytics;
 
 import java.util.List;
-import java.util.Vector;
 
 public class ClasificadorTiquete {
 
@@ -54,7 +53,7 @@ public class ClasificadorTiquete {
         int emocionNegativa = 0;
         int urgencia = 0;
 
-        // Contar palabras emocionales (simplificado)
+        // Contar palabras emocionales
         for (String token : tokens) {
             switch (token) {
                 case "urgente", "emergencia", "inmediato", "rapido" -> urgencia++;
@@ -70,28 +69,56 @@ public class ClasificadorTiquete {
 
         return "NEUTRO";
     }
-    // Métodos auxiliares para sumar palabras por categoría
+
+    // CORRECCIÓN: Ajustar índices según el orden en ListaPalabrasTecnicas
+    // El array tiene 39 palabras en total
     private int sumarPalabrasRedes(int[] vector) {
-        // Índices de palabras relacionadas con redes
-        return vector[0] + vector[1] + vector[2] + vector[3] + vector[4] + vector[5];
+        // Índices 0-5: wifi, red, conexion, internet, redes, router
+        int suma = 0;
+        for (int i = 0; i <= 5 && i < vector.length; i++) {
+            suma += vector[i];
+        }
+        return suma;
     }
 
     private int sumarPalabrasPlataforma(int[] vector) {
-        // Índices de palabras relacionadas con plataforma virtual
-        return vector[6] + vector[7] + vector[8] + vector[9] + vector[10];
+        // Índices 6-10: moodle, plataforma, virtual, curso, aula (solo hay 5, no 11)
+        int suma = 0;
+        for (int i = 6; i <= 10 && i < vector.length; i++) {
+            suma += vector[i];
+        }
+        return suma;
     }
 
-    // Implementar métodos similares para otras categorías...
     private int sumarPalabrasCorreo(int[] vector) {
-        return vector[11] + vector[12] + vector[13] + vector[14] + vector[15];
+        // Índices 11-15: correo, email, outlook, contraseña, login
+        int suma = 0;
+        for (int i = 11; i <= 15 && i < vector.length; i++) {
+            suma += vector[i];
+        }
+        return suma;
     }
 
     private int sumarPalabrasSoftware(int[] vector) {
-        return vector[16] + vector[17] + vector[18] + vector[19] + vector[20];
+        // Índices 16-20: software, programa, aplicacion, instalar, actualizar
+        int suma = 0;
+        for (int i = 16; i <= 20 && i < vector.length; i++) {
+            suma += vector[i];
+        }
+        return suma;
     }
 
     private int sumarPalabrasHardware(int[] vector) {
-        return vector[21] + vector[22] + vector[23] + vector[24] + vector[25];
+        // Índices 21-25: hardware, computadora, teclado, mouse, monitor
+        // NOTA: El array tiene más palabras después (impresora, laboratorio, etc.)
+        int suma = 0;
+        for (int i = 21; i <= 25 && i < vector.length; i++) {
+            suma += vector[i];
+        }
+        // Agregar también: impresora (26)
+        if (vector.length > 26) {
+            suma += vector[26];
+        }
+        return suma;
     }
 }
-

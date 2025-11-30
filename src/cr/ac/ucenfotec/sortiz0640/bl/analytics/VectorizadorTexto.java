@@ -9,11 +9,14 @@ public class VectorizadorTexto {
     private Map<String, Integer> vocabularioTecnico;
     private Map<String, Integer> vocabularioEmocional;
 
-    private ListaPalabrasEmociones emociones = new ListaPalabrasEmociones();
-    private ListaPalabrasTecnicas tecnicas = new ListaPalabrasTecnicas();
+    private ListaPalabrasEmociones emociones;
+    private ListaPalabrasTecnicas tecnicas;
 
-    public void vectorizar() {
-        inicVocabularios();
+    // CORRECCIÓN: Inicializar en el constructor
+    public VectorizadorTexto() {
+        this.emociones = new ListaPalabrasEmociones();
+        this.tecnicas = new ListaPalabrasTecnicas();
+        inicVocabularios();  // IMPORTANTE: Inicializar automáticamente
     }
 
     private void inicVocabularios() {
@@ -53,6 +56,4 @@ public class VectorizadorTexto {
         }
         return vector;
     }
-
-
 }

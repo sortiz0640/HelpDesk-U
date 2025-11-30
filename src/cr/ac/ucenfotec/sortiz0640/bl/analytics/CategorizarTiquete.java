@@ -1,4 +1,3 @@
-// En CategorizarTiquete.java
 package cr.ac.ucenfotec.sortiz0640.bl.analytics;
 
 public class CategorizarTiquete {
