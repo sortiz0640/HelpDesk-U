@@ -42,15 +42,9 @@ public class GestorTicket {
      * @return Mensaje indicando éxito con los datos del ticket o mensaje de error
      */
 
-    public String agregar(String asunto, String descripcion, Usuario usuario, Departamento departamento) {
+    public boolean agregar(String asunto, String descripcion, Usuario usuario, Departamento departamento) {
         Ticket nuevoTicket = new Ticket(asunto, descripcion, usuario, departamento);
-        boolean resultado = db.agregar(nuevoTicket);
-
-        if (!resultado) {
-            return "[ERR] Error al crear el ticket";
-        }
-
-        return "[INFO] El ticket ha sido creado con éxito.\n" + nuevoTicket.toString();
+        return db.agregar(nuevoTicket);
     }
 
     /**

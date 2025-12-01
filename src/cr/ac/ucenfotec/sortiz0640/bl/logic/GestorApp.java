@@ -180,13 +180,13 @@ public class GestorApp {
      * @return Mensaje indicando éxito con los datos del ticket o error
      */
 
-    public String crearTicket(String asunto, String descripcion, String correoDepartamento) {
+    public boolean crearTicket(String asunto, String descripcion, String correoDepartamento) {
         if (!gestorDepartamento.existePorCorreo(correoDepartamento)) {
-            return "[ERR] El correo especificado no pertenece a ningún departamento. Intente nuevamente";
+            return false;
         }
 
         Departamento departamento = buscarDepartamentoPorCorreo(correoDepartamento);
-        String resultado = gestorTicket.agregar(asunto, descripcion, getUsuarioActual(), departamento);
+        boolean resultado = gestorTicket.agregar(asunto, descripcion, getUsuarioActual(), departamento);
 
         return resultado;
     }
@@ -227,6 +227,22 @@ public class GestorApp {
 
     public String eliminarTicket(String ticketId) {
         return gestorTicket.eliminarPorId(ticketId);
+    }
+
+    public String[] obtenerDetallesTicket(String ticketId) {
+        Ticket t = gestorTicket.buscarPorId(ticketId);
+
+        return new String[]{
+                t.getId(),
+                t.getAsunto(),
+                t.getDescripcion(),
+                t.getDepartamento().getCorreo(),
+                t.getUsuario().getCorreo(),
+                t.getCategoriaTecnica(),
+                t.getCategoriaEmocional(),
+                t.getEstado().toString(),
+                t.getEstado().toString()
+        };
     }
 
     /**
