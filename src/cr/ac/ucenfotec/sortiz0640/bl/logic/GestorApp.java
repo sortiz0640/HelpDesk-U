@@ -5,6 +5,7 @@ import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -88,6 +89,42 @@ public class GestorApp {
         return gestorUsuario.listarTodos();
     }
 
+    public String[] obtenerDetallesUsuario(String correoUsuario) {
+        Usuario u = gestorUsuario.buscarPorCorreo(correoUsuario);
+
+        return new String[]{
+                u.getNombre(),
+                u.getApellidos(),
+                u.getCorreo(),
+                u.getRol().toString(),
+        };
+    }
+
+    public ArrayList<String[]> obtenerTodosUsuariosFormato() {
+        ArrayList<Usuario> usuarios = gestorUsuario.obtenerUsuarios();
+        return convertirUsuariosArray(usuarios);
+    }
+
+    public ArrayList<String[]> convertirUsuariosArray(ArrayList<Usuario> usuarios) {
+        ArrayList<String[]> resultado = new ArrayList<>();
+
+        if (usuarios == null || usuarios.isEmpty()) {
+            return resultado;
+        }
+
+        for (Usuario u : usuarios) {
+            String[] datos = {
+                u.getNombre(),
+                u.getApellidos(),
+                u.getCorreo(),
+                u.getRol().toString(),
+            };
+            resultado.add(datos);
+        }
+
+        return resultado;
+    }
+
     // ============================================
     // OPERACIONES DE DEPARTAMENTO
     // ============================================
@@ -165,6 +202,40 @@ public class GestorApp {
         return gestorDepartamento.buscarPorCorreo(correo);
     }
 
+    public String[] obtenerDetallesDepartamento(String correoDepartamento) {
+        Departamento d = gestorDepartamento.buscarPorCorreo(correoDepartamento);
+
+        return new String[]{
+            d.getNombre(),
+            d.getCorreo(),
+            d.getDescripcion(),
+        };
+    }
+
+    public ArrayList<String[]> obtenerTodosDepartamentosFormato() {
+        ArrayList<Departamento> departamentos = gestorDepartamento.obtenerDepartamentos();
+        return convertirDepartamentosArray(departamentos);
+    }
+
+    public ArrayList<String[]> convertirDepartamentosArray(ArrayList<Departamento> departamentos){
+        ArrayList<String[]> resultado = new ArrayList<>();
+
+        if (departamentos == null || departamentos.isEmpty()) {
+            return resultado;
+        }
+
+        for (Departamento d : departamentos) {
+            String[] datos = {
+                d.getNombre(),
+                d.getCorreo(),
+                d.getDescripcion(),
+            };
+            resultado.add(datos);
+        }
+
+        return resultado;
+    }
+
     // ============================================
     // OPERACIONES DE TICKET
     // ============================================
@@ -211,13 +282,13 @@ public class GestorApp {
 
         for (Ticket ticket : tickets) {
             String[] datos = {
-                    ticket.getId(),
-                    ticket.getAsunto(),
-                    ticket.getDepartamento().getCorreo(),
-                    ticket.getUsuario().getCorreo(),
-                    ticket.getCategoriaTecnica(),
-                    ticket.getCategoriaEmocional(),
-                    ticket.getEstado().toString()
+                ticket.getId(),
+                ticket.getAsunto(),
+                ticket.getDepartamento().getCorreo(),
+                ticket.getUsuario().getCorreo(),
+                ticket.getCategoriaTecnica(),
+                ticket.getCategoriaEmocional(),
+                ticket.getEstado().toString()
             };
             resultado.add(datos);
         }
