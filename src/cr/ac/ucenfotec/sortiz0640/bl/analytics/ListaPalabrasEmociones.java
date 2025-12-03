@@ -2,12 +2,15 @@ package cr.ac.ucenfotec.sortiz0640.bl.analytics;
 
 public class ListaPalabrasEmociones {
 
-    static String[] palabrasEmociones = {
-        "urgente", "emergencia", "problema", "error", "falla", "no funciona",
-        "lento", "congelado", "crash", "bloqueado",
-        "frustrado", "molesto", "enojado", "preocupado", "estresado",
-        "ayuda", "soporte", "inmediato", "rapido",
-        "gracias", "excelente", "bueno", "funciona", "perfecto", "satisfecho"
+    private String[] palabrasEmociones = {
+            // MOLESTO
+            "frustrado", "molesto", "enojado", "preocupado", "estresado",
+            "urgente", "emergencia", "problema", "error", "falla",
+            "mal", "terrible", "pesimo", "horrible",
+
+            // FELIZ
+            "gracias", "excelente", "bueno", "funciona", "perfecto",
+            "satisfecho", "genial", "bien", "contento", "agradecido"
     };
 
     public String[] getPalabrasEmociones() {
