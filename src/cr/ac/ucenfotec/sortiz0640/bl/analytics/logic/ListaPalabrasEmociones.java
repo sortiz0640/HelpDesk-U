@@ -1,4 +1,4 @@
-package cr.ac.ucenfotec.sortiz0640.bl.analytics;
+package cr.ac.ucenfotec.sortiz0640.bl.analytics.logic;
 
 public class ListaPalabrasEmociones {
 
