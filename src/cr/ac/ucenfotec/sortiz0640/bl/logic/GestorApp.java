@@ -288,7 +288,8 @@ public class GestorApp {
                 ticket.getUsuario().getCorreo(),
                 ticket.getCategoriaTecnica(),
                 ticket.getCategoriaEmocional(),
-                ticket.getEstado().toString()
+                ticket.getEstado().toString(),
+                ticket.getDescripcion()
             };
             resultado.add(datos);
         }
