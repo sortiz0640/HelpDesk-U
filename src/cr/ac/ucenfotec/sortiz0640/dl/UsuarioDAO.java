@@ -56,7 +56,7 @@ public class UsuarioDAO extends DataAccessObject<Usuario> {
         String query = "DELETE FROM usuarios WHERE correo = '" + correo + "'";
         DATA_ACCESS.ejecutar(query);
 
-        return false;
+        return true;
     }
 
     @Override
@@ -89,18 +89,23 @@ public class UsuarioDAO extends DataAccessObject<Usuario> {
         ResultSet res = DATA_ACCESS.ejectuarRS(query);
 
         while (res.next()) {
-            usuarios.add(buscar(res.getString("correo")));
+            Usuario tmp = new Usuario();
+            tmp.setNombre(res.getString("nombre"));
+            tmp.setApellidos(res.getString("apellidos"));
+            tmp.setCorreo(res.getString("correo"));
+            tmp.setPassword(res.getString("password"));
+            tmp.setRol(ListaRoles.valueOf(res.getString("rol")));
+
+            usuarios.add(tmp);
         }
 
-        return null;
+        return usuarios;
     }
 
     @Override
     public boolean existe(String correo) throws SQLException {
-         return buscar(correo) != null;
+        String query = "SELECT 1 FROM usuarios WHERE correo = '" + correo + "'";
+        ResultSet res = DATA_ACCESS.ejectuarRS(query);
+        return res.next();
     }
-
-
-
-
 }

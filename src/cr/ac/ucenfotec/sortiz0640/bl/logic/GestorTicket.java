@@ -4,9 +4,11 @@ import cr.ac.ucenfotec.sortiz0640.bl.analytics.CategorizarTiquete;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
+import cr.ac.ucenfotec.sortiz0640.bl.util.ConfigPropertiesReader;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
-import cr.ac.ucenfotec.sortiz0640.dl.DataTicket;
+import cr.ac.ucenfotec.sortiz0640.dl.TicketDAO;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -22,29 +24,24 @@ import java.util.ArrayList;
 
 public class GestorTicket {
 
-    private DataTicket db;
+    private TicketDAO db;
     private CategorizarTiquete categorizador;
 
     /**
      * Constructor que inicializa el gestor y su capa de datos.
      */
 
-    public GestorTicket() {
-        db = new DataTicket();
+    public GestorTicket() throws SQLException, ClassNotFoundException {
+        ConfigPropertiesReader config = new ConfigPropertiesReader();
+        db = new TicketDAO(
+                config.getDbDriver(),
+                config.getDbUrl(),
+                config.getDbUser(),
+                config.getDbPassword()
+        );
     }
 
-    /**
-     * Crea un nuevo ticket en el sistema.
-     * El ticket se genera automáticamente con un ID único y estado NUEVO.
-     *
-     * @param asunto Asunto o título del ticket
-     * @param descripcion Descripción detallada del problema o solicitud
-     * @param usuario Usuario que crea el ticket (pasado como parámetro)
-     * @param departamento Departamento al que se asigna el ticket (pasado como parámetro)
-     * @return true si el ticket se agregó correctamente, false en caso contrario
-     */
-
-    public boolean agregar(String asunto, String descripcion, Usuario usuario, Departamento departamento) {
+    public boolean agregar(String asunto, String descripcion, Usuario usuario, Departamento departamento) throws SQLException {
         Ticket nuevoTicket = new Ticket(asunto, descripcion, usuario, departamento);
 
         categorizador = new CategorizarTiquete();
@@ -53,15 +50,8 @@ public class GestorTicket {
         return db.agregar(nuevoTicket);
     }
 
-    /**
-     * Elimina un ticket del sistema por su ID.
-     *
-     * @param ticketId ID del ticket a eliminar
-     * @return Mensaje indicando éxito o error en la operación
-     */
-
-    public String eliminarPorId(String ticketId) {
-        boolean resultado = db.eliminarPorId(ticketId);
+    public String eliminarPorId(String ticketId) throws SQLException {
+        boolean resultado = db.eliminar(ticketId);
 
         if (!resultado) {
             return "[ERR] El ticket especificado no existe. Intente nuevamente";
@@ -70,15 +60,7 @@ public class GestorTicket {
         return "[INFO] Ticket eliminado correctamente";
     }
 
-    /**
-     * Actualiza el estado de un ticket existente.
-     *
-     * @param ticketId ID del ticket a actualizar
-     * @param nuevoEstado Nuevo estado a asignar (NUEVO, EN_PROGRESO, RESUELTO)
-     * @return Mensaje indicando éxito o error en la operación
-     */
-
-    public String actualizarEstado(String ticketId, EstadoTicket nuevoEstado) {
+    public String actualizarEstado(String ticketId, EstadoTicket nuevoEstado) throws SQLException {
         boolean resultado = db.actualizarEstado(ticketId, nuevoEstado);
 
         if (!resultado) {
@@ -88,88 +70,19 @@ public class GestorTicket {
         return "[INFO] Ticket actualizado correctamente";
     }
 
-    /**
-     * Obtiene una lista con todos los tickets del sistema.
-     *
-     * @return ArrayList con la representación en texto de todos los tickets
-     */
-
-    public ArrayList<String> listarTodos() {
-        return db.listarTodos();
+    public ArrayList<Ticket> obtenerTickets() throws SQLException {
+        return db.obtenerTodos();
     }
 
-    /**
-     * Obtiene una lista tipo Ticket con todos los tickets del sistema.
-     *
-     * @return ArrayList de objetos tipo Ticket
-     */
-
-    public ArrayList<Ticket> obtenerTickets() {
-        return db.obtenerTickets();
+    public Ticket buscarPorId(String ticketId) throws SQLException {
+        return db.buscar(ticketId);
     }
 
-    /**
-     * Obtiene una lista de tickets creados por un usuario específico.
-     *
-     * @param correoUsuario Correo del usuario
-     * @return ArrayList con los tickets del usuario especificado
-     */
-
-    public ArrayList<String> listarPorUsuario(String correoUsuario) {
-        return db.listarPorUsuario(correoUsuario);
+    public void eliminarPorCorreoDepartamento(String correoDepartamento) throws SQLException {
+        db.eliminar(correoDepartamento);
     }
 
-    /**
-     * Busca y retorna un objeto Ticket por su ID.
-     *
-     * @param ticketId ID del ticket a buscar
-     * @return Objeto Ticket si existe, null si no se encuentra
-     */
-
-    public Ticket buscarPorId(String ticketId) {
-        return db.buscarPorId(ticketId);
-    }
-
-    /**
-     * Verifica si existe un ticket con el ID especificado.
-     *
-     * @param ticketId ID del ticket a verificar
-     * @return true si el ticket existe, false en caso contrario
-     */
-
-    public boolean existePorId(String ticketId) {
-        return db.existePorId(ticketId);
-    }
-
-    /**
-     * Verifica si existen tickets registrados en el sistema.
-     *
-     * @return true si hay al menos un ticket, false si está vacío
-     */
-
-    public boolean existenTickets() {
-        return db.existenTickets();
-    }
-
-    /**
-     * Elimina todos los tickets asociados a un departamento específico.
-     * Utilizado cuando se elimina un departamento para mantener integridad referencial.
-     *
-     * @param correoDepartamento Correo del departamento cuyos tickets serán eliminados
-     */
-
-    public void eliminarPorCorreoDepartamento(String correoDepartamento) {
-        db.eliminarPorCorreoDepartamento(correoDepartamento);
-    }
-
-    /**
-     * Obtiene los tickets de un usuario específico como lista de objetos Ticket.
-     *
-     * @param correoUsuario Correo del usuario
-     * @return ArrayList con los tickets del usuario
-     */
-
-    public ArrayList<Ticket> obtenerTicketsPorUsuario(String correoUsuario) {
+    public ArrayList<Ticket> obtenerTicketsPorUsuario(String correoUsuario) throws SQLException {
         ArrayList<Ticket> tickets = obtenerTickets();
         ArrayList<Ticket> filtrados = new ArrayList<>();
 
@@ -182,14 +95,7 @@ public class GestorTicket {
         return filtrados;
     }
 
-    /**
-     * Obtiene los detalles de un ticket específico en formato de array.
-     *
-     * @param ticketId ID del ticket
-     * @return Array con los detalles del ticket o null si no existe
-     */
-
-    public String[] obtenerDetallesTicket(String ticketId) {
+    public String[] obtenerDetallesTicket(String ticketId) throws SQLException {
         Ticket t = buscarPorId(ticketId);
 
         if (t == null) {
@@ -209,13 +115,7 @@ public class GestorTicket {
         };
     }
 
-    /**
-     * Convierte la lista de tickets a formato de array para tablas.
-     *
-     * @return ArrayList de arrays con los datos de cada ticket
-     */
-
-    public ArrayList<String[]> obtenerTodosTicketsFormato() {
+    public ArrayList<String[]> obtenerTodosTicketsFormato() throws SQLException {
         ArrayList<Ticket> tickets = obtenerTickets();
         ArrayList<String[]> resultado = new ArrayList<>();
 
@@ -240,14 +140,7 @@ public class GestorTicket {
         return resultado;
     }
 
-    /**
-     * Obtiene los tickets de un usuario en formato de array para tablas.
-     *
-     * @param correoUsuario Correo del usuario
-     * @return ArrayList de arrays con los datos de los tickets
-     */
-
-    public ArrayList<String[]> obtenerTicketsDelUsuarioFormato(String correoUsuario) {
+    public ArrayList<String[]> obtenerTicketsDelUsuarioFormato(String correoUsuario) throws SQLException {
         ArrayList<Ticket> tickets = obtenerTicketsPorUsuario(correoUsuario);
         ArrayList<String[]> resultado = new ArrayList<>();
 
