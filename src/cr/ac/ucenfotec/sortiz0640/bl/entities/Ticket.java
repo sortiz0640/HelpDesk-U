@@ -1,9 +1,7 @@
 package cr.ac.ucenfotec.sortiz0640.bl.entities;
 
-import cr.ac.ucenfotec.sortiz0640.bl.analytics.CategorizarTiquete;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
@@ -26,8 +24,8 @@ public class Ticket {
     private EstadoTicket estado;
     private Usuario usuario;
     private Departamento departamento;
-    private String categoriaTecnica;
-    private String categoriaEmocional;
+    private CategoriaTicket tecnica;
+    private CategoriaTicket emocion;
 
     /**
      * Constructor para crear un nuevo ticket.
@@ -106,19 +104,21 @@ public class Ticket {
         this.id = id;
     }
 
-    public void setCategorias(String tecnica, String emocional) {
-        this.categoriaTecnica = tecnica;
-        this.categoriaEmocional = emocional;
+    public CategoriaTicket getTecnica() {
+        return tecnica;
     }
 
-    public String getCategoriaEmocional() {
-        return categoriaEmocional;
+    public void setTecnica(CategoriaTicket tecnica) {
+        this.tecnica = tecnica;
     }
 
-    public String getCategoriaTecnica() {
-        return categoriaTecnica;
+    public CategoriaTicket getEmocion() {
+        return emocion;
     }
 
+    public void setEmocion(CategoriaTicket emocion) {
+        this.emocion = emocion;
+    }
 
     /**
      * Genera una representación en texto del ticket con toda su información.

@@ -41,11 +41,12 @@ public class GestorTicket {
         );
     }
 
-    public boolean agregar(String asunto, String descripcion, Usuario usuario, Departamento departamento) throws SQLException {
+    public boolean agregar(String asunto, String descripcion, Usuario usuario, Departamento departamento) throws SQLException, ClassNotFoundException {
         Ticket nuevoTicket = new Ticket(asunto, descripcion, usuario, departamento);
 
         categorizador = new CategorizarTiquete();
-        nuevoTicket.setCategorias(categorizador.obtenerCategoriaTecnica(descripcion), categorizador.obtenerCategoriaEmocional(descripcion));
+        nuevoTicket.setTecnica(categorizador.obtenerCategoriaTecnica(descripcion));
+        nuevoTicket.setEmocion(categorizador.obtenerCategoriaEmocional(descripcion));
 
         return db.agregar(nuevoTicket);
     }
@@ -108,8 +109,8 @@ public class GestorTicket {
                 t.getDescripcion(),
                 t.getDepartamento().getCorreo(),
                 t.getUsuario().getCorreo(),
-                t.getCategoriaTecnica(),
-                t.getCategoriaEmocional(),
+                t.getTecnica().getNombre(),
+                t.getEmocion().getNombre(),
                 t.getEstado().toString(),
                 t.getEstado().toString()
         };
@@ -129,8 +130,8 @@ public class GestorTicket {
                     ticket.getAsunto(),
                     ticket.getDepartamento().getCorreo(),
                     ticket.getUsuario().getCorreo(),
-                    ticket.getCategoriaTecnica(),
-                    ticket.getCategoriaEmocional(),
+                    ticket.getTecnica().getNombre(),
+                    ticket.getEmocion().getNombre(),
                     ticket.getEstado().toString(),
                     ticket.getDescripcion()
             };
@@ -154,8 +155,8 @@ public class GestorTicket {
                     ticket.getAsunto(),
                     ticket.getDepartamento().getCorreo(),
                     ticket.getUsuario().getCorreo(),
-                    ticket.getCategoriaTecnica(),
-                    ticket.getCategoriaEmocional(),
+                    ticket.getTecnica().getNombre(),
+                    ticket.getEmocion().getNombre(),
                     ticket.getEstado().toString(),
                     ticket.getDescripcion()
             };

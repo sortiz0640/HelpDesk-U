@@ -92,7 +92,7 @@ public class GestorApp {
     // ============================================
 
 
-    public boolean crearTicket(String asunto, String descripcion, String correoDepartamento) throws SQLException {
+    public boolean crearTicket(String asunto, String descripcion, String correoDepartamento) throws SQLException, ClassNotFoundException {
         // Valida que el departamento exista
         if (!gestorDepartamento.existePorCorreo(correoDepartamento)) {
             return false;

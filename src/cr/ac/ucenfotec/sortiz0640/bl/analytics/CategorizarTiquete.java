@@ -2,35 +2,32 @@ package cr.ac.ucenfotec.sortiz0640.bl.analytics;
 
 import cr.ac.ucenfotec.sortiz0640.bl.analytics.logic.ClasificadorTiquete;
 import cr.ac.ucenfotec.sortiz0640.bl.analytics.logic.FormateadorTexto;
+import cr.ac.ucenfotec.sortiz0640.bl.entities.CategoriaTicket;
+
+import java.sql.SQLException;
 
 public class CategorizarTiquete {
 
     private ClasificadorTiquete clasificador;
     private FormateadorTexto formateador;
 
-    public CategorizarTiquete() {
+    public CategorizarTiquete() throws SQLException, ClassNotFoundException {
         this.clasificador = new ClasificadorTiquete();
         this.formateador = new FormateadorTexto();
     }
 
-    public String obtenerCategoriaTecnica(String descripcionTiquete) {
+    public CategoriaTicket obtenerCategoriaTecnica(String descripcionTiquete) {
         String[] tokens = formateador.procesarTexto(descripcionTiquete);
-        return clasificador.obtenerCategoriaTecnica(tokens);
+        return clasificador.getCategoriaTecnica(tokens);
+
     }
 
-    public String obtenerCategoriaEmocional(String descripcionTiquete) {
+    public CategoriaTicket obtenerCategoriaEmocional(String descripcionTiquete) {
         String[] tokens = formateador.procesarTexto(descripcionTiquete);
-        return clasificador.obtenerCategoriaEmocional(tokens);
+        return clasificador.getCategoriaEmocional(tokens);
     }
 
-    public String[] obtenerPalabrasDetonantesTocnicas(String descripcionTiquete) {
-        String[] tokens = formateador.procesarTexto(descripcionTiquete);
-        return clasificador.obtenerPalabrasDetonantesTecnicas(tokens);
-    }
 
-    public String[] obtenerPalabrasDetonantesEmocionales(String descripcionTiquete) {
-        String[] tokens = formateador.procesarTexto(descripcionTiquete);
-        return clasificador.obtenerPalabrasDetonantesEmocionales(tokens);
-    }
+
 
 }

@@ -16,34 +16,6 @@ public class CategoriasDAO {
         this.DATA_ACCESS = Connector.getDataAccess(driver, url, username, password);
     }
 
-    public ArrayList<String> obtenerPalabrasEmociones() throws SQLException {
-
-        ArrayList<String> palabras = new ArrayList<>();
-
-        String query = "SELECT * FROM palabras_emociones";
-        ResultSet res = DATA_ACCESS.ejectuarRS(query);
-
-        while (res.next()) {
-            palabras.add(res.getString("palabra"));
-        }
-
-        return palabras;
-    }
-
-    public ArrayList<String>  obtenerPalabrasTecnicas() throws SQLException {
-
-        ArrayList<String> palabras = new ArrayList<>();
-
-        String query = "SELECT * FROM palabras_tecnicas";
-        ResultSet res = DATA_ACCESS.ejectuarRS(query);
-
-        while (res.next()) {
-            palabras.add(res.getString("palabra"));
-        }
-
-        return palabras;
-
-    }
 
     public HashMap<String, ArrayList<String>> obtenerCategoriasTecnicas() throws SQLException {
 
@@ -64,5 +36,26 @@ public class CategoriasDAO {
         }
 
         return palabrasTecnicas;
+    }
+
+    public HashMap<String, ArrayList<String>> obtenerCategoriasEmocionales() throws SQLException {
+
+        HashMap<String, ArrayList<String>> palabrasEmocionales = new HashMap<>();
+        String query =  "SELECT * FROM palabras_emocionales PT INNER JOIN categorias C ON PT.idCategoria = C.idCategoria ";
+        ResultSet res = DATA_ACCESS.ejectuarRS(query);
+
+        while (res.next()) {
+
+            String palabra = res.getString("palabra");
+            String categoria = res.getString("categoria");
+
+            if (!palabrasEmocionales.containsKey(categoria)) {
+                palabrasEmocionales.put(categoria, new ArrayList<>());
+            }
+
+            palabrasEmocionales.get(categoria).add(palabra);
+        }
+
+        return palabrasEmocionales;
     }
 }
