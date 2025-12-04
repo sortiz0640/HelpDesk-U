@@ -1,9 +1,13 @@
 package cr.ac.ucenfotec.sortiz0640.dl;
 
+import cr.ac.ucenfotec.dbaccess.AccessDB;
+import cr.ac.ucenfotec.dbaccess.Connector;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
-import cr.ac.ucenfotec.sortiz0640.dl.template.IDao;
+import cr.ac.ucenfotec.sortiz0640.bl.util.DataAccessObject;
+import cr.ac.ucenfotec.sortiz0640.bl.util.ListaRoles;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -15,125 +19,88 @@ import java.util.ArrayList;
  * @since 2025
  */
 
-public class UsuarioDAO implements IDao<Usuario> {
+public class UsuarioDAO extends DataAccessObject<Usuario> {
 
-    @Override
-    public boolean insertar(Usuario usuario) throws SQLException {
-        String sql = "INSERT INTO usuarios (correo, nombre, apellido, password) VALUES (?, ?, ?, ?)";
+    private AccessDB DATA_ACCESS;
 
-        try (Connection conn = Conexion.getConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, usuario.getCorreo());
-            stmt.setString(2, usuario.getNombre());
-            stmt.setString(3, usuario.getApellidos());
-            stmt.setString(4, usuario.getPassword());
-
-            int filasAfectadas = stmt.executeUpdate();
-            return filasAfectadas > 0;
-
-        } catch (SQLException e) {
-            throw new SQLException("Error al insertar usuario: " + e.getMessage());
-        }
+    public UsuarioDAO(String driver, String url, String username, String password) throws SQLException, ClassNotFoundException {
+        this.DATA_ACCESS = Connector.getDataAccess(driver, url, username, password);
     }
 
     @Override
-    public boolean actualizar(Usuario usuario) throws SQLException {
-        String sql = "UPDATE usuarios SET nombre = ?, apellido = ?, password = ? WHERE correo = ?";
+    public boolean agregar(Usuario usuario) throws SQLException {
 
-        try (Connection conn = Conexion.getConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String query = "INSERT INTO usuarios (nombre, apellidos, correo, password, rol) " +
+                "VALUES ('" + usuario.getNombre() + "', " +
+                "'" + usuario.getApellidos() + "', " +
+                "'" + usuario.getCorreo() + "', " +
+                "'" + usuario.getPassword() + "', " +
+                "'" + usuario.getRol().name() + "')";
 
-            stmt.setString(1, usuario.getNombre());
-            stmt.setString(2, usuario.getApellidos());
-            stmt.setString(3, usuario.getPassword());
-            stmt.setString(4, usuario.getCorreo());
-
-            int filasAfectadas = stmt.executeUpdate();
-            return filasAfectadas > 0;
-
-        } catch (SQLException e) {
-            throw new SQLException("Error al actualizar usuario: " + e.getMessage());
+        if (existe(usuario.getCorreo())) {
+            return false;
         }
+
+        DATA_ACCESS.ejecutar(query);
+        return true;
+
     }
 
     @Override
     public boolean eliminar(String correo) throws SQLException {
-        String sql = "DELETE FROM usuarios WHERE correo = ?";
 
-        try (Connection conn = Conexion.getConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, correo);
-
-            int filasAfectadas = stmt.executeUpdate();
-            return filasAfectadas > 0;
-
-        } catch (SQLException e) {
-            throw new SQLException("Error al eliminar usuario: " + e.getMessage());
+        if (!existe(correo)) {
+            return false;
         }
+
+        String query = "DELETE FROM usuarios WHERE correo = '" + correo + "'";
+        DATA_ACCESS.ejecutar(query);
+
+        return false;
     }
 
     @Override
-    public Usuario buscarPorId(String correo) throws SQLException {
-        String sql = "SELECT * FROM usuarios WHERE correo = ?";
+    public Usuario buscar(String correo) throws SQLException {
 
-        try (Connection conn = Conexion.getConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Usuario tmp = new Usuario();
 
-            stmt.setString(1, correo);
+        String query = "SELECT * FROM usuarios WHERE correo = '" + correo + "'";
+        ResultSet res = DATA_ACCESS.ejectuarRS(query);
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return construirUsuario(rs);
-                }
-            }
+        if (res.next()) {
+            tmp.setNombre(res.getString("nombre"));
+            tmp.setApellidos(res.getString("apellidos"));
+            tmp.setCorreo(res.getString("correo"));
+            tmp.setPassword(res.getString("password"));
+            tmp.setRol(ListaRoles.valueOf(res.getString("rol")));
 
-            return null;
-
-        } catch (SQLException e) {
-            throw new SQLException("Error al buscar usuario: " + e.getMessage());
+            return tmp;
         }
+
+        return null;
     }
 
     @Override
-    public ArrayList<Usuario> listarTodos() throws SQLException {
+    public ArrayList<Usuario> obtenerTodos() throws SQLException {
+
         ArrayList<Usuario> usuarios = new ArrayList<>();
-        String sql = "SELECT * FROM usuarios ORDER BY nombre";
 
-        try (Connection conn = Conexion.getConexion();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        String query = "SELECT * FROM usuarios";
+        ResultSet res = DATA_ACCESS.ejectuarRS(query);
 
-            while (rs.next()) {
-                usuarios.add(construirUsuario(rs));
-            }
-
-            return usuarios;
-
-        } catch (SQLException e) {
-            throw new SQLException("Error al listar usuarios: " + e.getMessage());
+        while (res.next()) {
+            usuarios.add(buscar(res.getString("correo")));
         }
+
+        return null;
     }
 
     @Override
     public boolean existe(String correo) throws SQLException {
-        return buscarPorId(correo) != null;
+         return buscar(correo) != null;
     }
 
-    /**
-     * Método auxiliar para construir un objeto Usuario desde un ResultSet.
-     *
-     * @param rs ResultSet con los datos del usuario
-     * @return Objeto Usuario construido
-     * @throws SQLException si hay error al leer los datos
-     */
-    private Usuario construirUsuario(ResultSet rs) throws SQLException {
-        Usuario usuario = new Usuario();
-        usuario.setCorreo(rs.getString("correo"));
-        usuario.setNombre(rs.getString("nombre"));
-        usuario.setApellidos(rs.getString("apellidos"));
-        usuario.setPassword(rs.getString("password"));
-        return usuario;
-    }
+
+
+
 }

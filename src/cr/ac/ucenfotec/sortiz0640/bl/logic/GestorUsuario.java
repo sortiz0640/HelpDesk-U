@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 /**
  * Gestor de lógica de negocio para la administración de usuarios.
- * Maneja todas las operaciones relacionadas con usuarios del sistema,
- * incluyendo creación, eliminación, búsqueda y listado.
+ * Trabaja exclusivamente con la entidad Usuario.
+ * No tiene dependencias de otros gestores.
  *
  * @author Sebastian Ortiz
- * @version 1.0
+ * @version 2.0
  * @since 2025
  */
 
@@ -29,7 +29,6 @@ public class GestorUsuario {
 
     /**
      * Agrega un nuevo usuario al sistema.
-     * Valida que el rol sea válido y que el correo no esté registrado previamente.
      *
      * @param nombre Nombre del usuario
      * @param apellidos Apellidos del usuario
@@ -135,5 +134,54 @@ public class GestorUsuario {
 
     public ArrayList<Usuario> obtenerUsuarios() {
         return db.obtenerUsuarios();
+    }
+
+    /**
+     * Obtiene los detalles de un usuario específico en formato de array.
+     *
+     * @param correoUsuario Correo del usuario
+     * @return Array con [nombre, apellidos, correo, rol] o null si no existe
+     */
+
+    public String[] obtenerDetallesUsuario(String correoUsuario) {
+        Usuario u = buscarPorCorreo(correoUsuario);
+
+        if (u == null) {
+            return null;
+        }
+
+        return new String[]{
+                u.getNombre(),
+                u.getApellidos(),
+                u.getCorreo(),
+                u.getRol().toString(),
+        };
+    }
+
+    /**
+     * Convierte la lista de usuarios a formato de array para tablas.
+     *
+     * @return ArrayList de arrays con los datos de cada usuario
+     */
+
+    public ArrayList<String[]> obtenerTodosUsuariosFormato() {
+        ArrayList<Usuario> usuarios = obtenerUsuarios();
+        ArrayList<String[]> resultado = new ArrayList<>();
+
+        if (usuarios == null || usuarios.isEmpty()) {
+            return resultado;
+        }
+
+        for (Usuario u : usuarios) {
+            String[] datos = {
+                    u.getNombre(),
+                    u.getApellidos(),
+                    u.getCorreo(),
+                    u.getRol().toString(),
+            };
+            resultado.add(datos);
+        }
+
+        return resultado;
     }
 }

@@ -1,21 +1,23 @@
 package cr.ac.ucenfotec.sortiz0640.bl.logic;
 
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
-import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
  * Gestor principal de la aplicación HelpDesk.
- * Actúa como fachada del sistema, coordinando las operaciones entre todos los gestores
- * especializados (Usuario, Departamento, Ticket, Sesión).
- * Proporciona una interfaz unificada para todas las funcionalidades del sistema.
+ * Actúa como FACHADA y ÚNICO INTERMEDIARIO entre todos los gestores.
+ *
+ * PRINCIPIO DE DISEÑO:
+ * - Ningún gestor conoce a otro gestor
+ * - GestorApp es el único que coordina las operaciones entre gestores
+ * - Cada gestor trabaja solo con su entidad
+ * - GestorApp pasa las dependencias como parámetros cuando es necesario
  *
  * @author Sebastian Ortiz
- * @version 1.0
+ * @version 2.0
  * @since 2025
  */
 
@@ -27,8 +29,7 @@ public class GestorApp {
     private GestorSesion gestorSesion;
 
     /**
-     * Constructor que inicializa todos los gestores del sistema.
-     * Crea las instancias de los gestores de Usuario, Departamento, Ticket y Sesión.
+     * Constructor que inicializa todos los gestores del sistema de forma independiente.
      */
 
     public GestorApp() {
@@ -89,40 +90,25 @@ public class GestorApp {
         return gestorUsuario.listarTodos();
     }
 
-    public String[] obtenerDetallesUsuario(String correoUsuario) {
-        Usuario u = gestorUsuario.buscarPorCorreo(correoUsuario);
+    /**
+     * Obtiene los detalles de un usuario en formato de array.
+     *
+     * @param correoUsuario Correo del usuario
+     * @return Array con [nombre, apellidos, correo, rol]
+     */
 
-        return new String[]{
-                u.getNombre(),
-                u.getApellidos(),
-                u.getCorreo(),
-                u.getRol().toString(),
-        };
+    public String[] obtenerDetallesUsuario(String correoUsuario) {
+        return gestorUsuario.obtenerDetallesUsuario(correoUsuario);
     }
+
+    /**
+     * Obtiene todos los usuarios en formato de array para tablas.
+     *
+     * @return ArrayList de arrays con los datos de cada usuario
+     */
 
     public ArrayList<String[]> obtenerTodosUsuariosFormato() {
-        ArrayList<Usuario> usuarios = gestorUsuario.obtenerUsuarios();
-        return convertirUsuariosArray(usuarios);
-    }
-
-    public ArrayList<String[]> convertirUsuariosArray(ArrayList<Usuario> usuarios) {
-        ArrayList<String[]> resultado = new ArrayList<>();
-
-        if (usuarios == null || usuarios.isEmpty()) {
-            return resultado;
-        }
-
-        for (Usuario u : usuarios) {
-            String[] datos = {
-                u.getNombre(),
-                u.getApellidos(),
-                u.getCorreo(),
-                u.getRol().toString(),
-            };
-            resultado.add(datos);
-        }
-
-        return resultado;
+        return gestorUsuario.obtenerTodosUsuariosFormato();
     }
 
     // ============================================
@@ -144,14 +130,17 @@ public class GestorApp {
 
     /**
      * Elimina un departamento y todos sus tickets asociados.
-     * Implementa eliminación en cascada para mantener integridad referencial.
+     * COORDINACIÓN: GestorApp coordina la eliminación en cascada.
+     * Primero elimina los tickets del departamento, luego el departamento.
      *
      * @param correo Correo del departamento a eliminar
      * @return Mensaje indicando éxito o error
      */
 
     public String eliminarDepartamento(String correo) {
+        // Coordinación entre gestores: primero elimina tickets relacionados
         gestorTicket.eliminarPorCorreoDepartamento(correo);
+        // Luego elimina el departamento
         return gestorDepartamento.eliminarPorCorreo(correo);
     }
 
@@ -167,18 +156,13 @@ public class GestorApp {
     }
 
     /**
-     * Lista todos los departamentos registrados en el sistema.
+     * Obtiene una lista con los correos de todos los departamentos.
      *
-     * @return ArrayList con la representación de todos los departamentos
+     * @return ArrayList con los correos de los departamentos
      */
 
     public ArrayList<String> obtenerDepartamentos() {
-
-        ArrayList<String> departamentos = new ArrayList<>();
-        for (Departamento d: gestorDepartamento.obtenerDepartamentos()) {
-            departamentos.add(d.getCorreo());
-        }
-        return departamentos;
+        return gestorDepartamento.obtenerCorreosDepartamentos();
     }
 
     /**
@@ -193,6 +177,8 @@ public class GestorApp {
 
     /**
      * Busca un departamento por su correo electrónico.
+     * COORDINACIÓN: Devuelve el objeto Departamento para que pueda ser usado
+     * por otros métodos de GestorApp al coordinar operaciones.
      *
      * @param correo Correo del departamento
      * @return Objeto Departamento si existe, null en caso contrario
@@ -202,38 +188,25 @@ public class GestorApp {
         return gestorDepartamento.buscarPorCorreo(correo);
     }
 
-    public String[] obtenerDetallesDepartamento(String correoDepartamento) {
-        Departamento d = gestorDepartamento.buscarPorCorreo(correoDepartamento);
+    /**
+     * Obtiene los detalles de un departamento en formato de array.
+     *
+     * @param correoDepartamento Correo del departamento
+     * @return Array con [nombre, correo, descripcion]
+     */
 
-        return new String[]{
-            d.getNombre(),
-            d.getCorreo(),
-            d.getDescripcion(),
-        };
+    public String[] obtenerDetallesDepartamento(String correoDepartamento) {
+        return gestorDepartamento.obtenerDetallesDepartamento(correoDepartamento);
     }
+
+    /**
+     * Obtiene todos los departamentos en formato de array para tablas.
+     *
+     * @return ArrayList de arrays con los datos de cada departamento
+     */
 
     public ArrayList<String[]> obtenerTodosDepartamentosFormato() {
-        ArrayList<Departamento> departamentos = gestorDepartamento.obtenerDepartamentos();
-        return convertirDepartamentosArray(departamentos);
-    }
-
-    public ArrayList<String[]> convertirDepartamentosArray(ArrayList<Departamento> departamentos){
-        ArrayList<String[]> resultado = new ArrayList<>();
-
-        if (departamentos == null || departamentos.isEmpty()) {
-            return resultado;
-        }
-
-        for (Departamento d : departamentos) {
-            String[] datos = {
-                d.getNombre(),
-                d.getCorreo(),
-                d.getDescripcion(),
-            };
-            resultado.add(datos);
-        }
-
-        return resultado;
+        return gestorDepartamento.obtenerTodosDepartamentosFormato();
     }
 
     // ============================================
@@ -242,83 +215,79 @@ public class GestorApp {
 
     /**
      * Crea un nuevo ticket asignado a un departamento específico.
-     * Valida que el departamento exista antes de crear el ticket.
-     * El ticket se crea automáticamente asociado al usuario de la sesión actual.
+     * COORDINACIÓN: GestorApp valida la existencia del departamento,
+     * obtiene el usuario actual de la sesión, busca el departamento,
+     * y coordina la creación del ticket con todos estos datos.
      *
      * @param asunto Asunto del ticket
      * @param descripcion Descripción detallada del problema
      * @param correoDepartamento Correo del departamento al que se asigna
-     * @return Mensaje indicando éxito con los datos del ticket o error
+     * @return true si el ticket se creó correctamente, false en caso contrario
      */
 
     public boolean crearTicket(String asunto, String descripcion, String correoDepartamento) {
+        // Valida que el departamento exista
         if (!gestorDepartamento.existePorCorreo(correoDepartamento)) {
             return false;
         }
 
-        Departamento departamento = buscarDepartamentoPorCorreo(correoDepartamento);
-        boolean resultado = gestorTicket.agregar(asunto, descripcion, getUsuarioActual(), departamento);
+        // Obtiene el departamento de GestorDepartamento
+        Departamento departamento = gestorDepartamento.buscarPorCorreo(correoDepartamento);
 
-        return resultado;
+        // Obtiene el usuario actual de GestorSesion
+        Usuario usuarioActual = gestorSesion.obtenerUsuarioActual();
+
+        // Coordina la creación del ticket pasando las entidades como parámetros
+        return gestorTicket.agregar(asunto, descripcion, usuarioActual, departamento);
     }
 
-
-    public ArrayList<String[]> obtenerTodosTicketsFormato() {
-        ArrayList<Ticket> tickets = gestorTicket.obtenerTickets(); // O el método que tengas
-        return convertirTicketsAArray(tickets);
-    }
-
-    public ArrayList<String[]> obtenerTicketsDelUsuarioFormato(String correoUsuario) {
-        ArrayList<Ticket> tickets = gestorTicket.obtenerTiquetesPorUsuario(correoUsuario);
-        return convertirTicketsAArray(tickets);
-    }
-
-    private ArrayList<String[]> convertirTicketsAArray(ArrayList<Ticket> tickets) {
-        ArrayList<String[]> resultado = new ArrayList<>();
-
-        if (tickets == null || tickets.isEmpty()) {
-            return resultado;
-        }
-
-        for (Ticket ticket : tickets) {
-            String[] datos = {
-                ticket.getId(),
-                ticket.getAsunto(),
-                ticket.getDepartamento().getCorreo(),
-                ticket.getUsuario().getCorreo(),
-                ticket.getCategoriaTecnica(),
-                ticket.getCategoriaEmocional(),
-                ticket.getEstado().toString(),
-                ticket.getDescripcion()
-            };
-            resultado.add(datos);
-        }
-
-        return resultado;
-    }
+    /**
+     * Elimina un ticket del sistema por su ID.
+     *
+     * @param ticketId ID del ticket a eliminar
+     * @return Mensaje indicando éxito o error
+     */
 
     public String eliminarTicket(String ticketId) {
         return gestorTicket.eliminarPorId(ticketId);
     }
 
-    public String[] obtenerDetallesTicket(String ticketId) {
-        Ticket t = gestorTicket.buscarPorId(ticketId);
+    /**
+     * Obtiene los detalles de un ticket en formato de array.
+     *
+     * @param ticketId ID del ticket
+     * @return Array con los detalles del ticket
+     */
 
-        return new String[]{
-                t.getId(),
-                t.getAsunto(),
-                t.getDescripcion(),
-                t.getDepartamento().getCorreo(),
-                t.getUsuario().getCorreo(),
-                t.getCategoriaTecnica(),
-                t.getCategoriaEmocional(),
-                t.getEstado().toString(),
-                t.getEstado().toString()
-        };
+    public String[] obtenerDetallesTicket(String ticketId) {
+        return gestorTicket.obtenerDetallesTicket(ticketId);
+    }
+
+    /**
+     * Obtiene todos los tickets en formato de array para tablas.
+     *
+     * @return ArrayList de arrays con los datos de cada ticket
+     */
+
+    public ArrayList<String[]> obtenerTodosTicketsFormato() {
+        return gestorTicket.obtenerTodosTicketsFormato();
+    }
+
+    /**
+     * Obtiene los tickets de un usuario específico en formato de array.
+     *
+     * @param correoUsuario Correo del usuario
+     * @return ArrayList de arrays con los datos de los tickets
+     */
+
+    public ArrayList<String[]> obtenerTicketsDelUsuarioFormato(String correoUsuario) {
+        return gestorTicket.obtenerTicketsDelUsuarioFormato(correoUsuario);
     }
 
     /**
      * Actualiza el estado de un ticket existente.
+     * COORDINACIÓN: GestorApp convierte el código de estado y coordina
+     * la actualización con GestorTicket.
      *
      * @param ticketId ID del ticket a actualizar
      * @param estado Código del nuevo estado (1: EN_PROGRESO, 2: RESUELTO)
@@ -339,13 +308,14 @@ public class GestorApp {
         return gestorTicket.actualizarEstado(ticketId, nuevoEstado);
     }
 
-
     // ============================================
     // OPERACIONES DE SESIÓN
     // ============================================
 
     /**
      * Inicia sesión en el sistema con las credenciales proporcionadas.
+     * COORDINACIÓN: GestorApp obtiene la lista de usuarios de GestorUsuario
+     * y la pasa a GestorSesion para validar las credenciales.
      *
      * @param correo Correo del usuario
      * @param password Contraseña del usuario
@@ -353,7 +323,9 @@ public class GestorApp {
      */
 
     public boolean iniciarSesion(String correo, String password) {
+        // Obtiene la lista de usuarios de GestorUsuario
         ArrayList<Usuario> usuarios = gestorUsuario.obtenerUsuarios();
+        // Coordina el inicio de sesión pasando los usuarios a GestorSesion
         return gestorSesion.iniciarSesion(correo, password, usuarios);
     }
 
@@ -405,15 +377,5 @@ public class GestorApp {
 
     public String obtenerCorreoUsuarioActual() {
         return gestorSesion.obtenerCorreo();
-    }
-
-    /**
-     * Método privado auxiliar para obtener el usuario actual.
-     *
-     * @return Usuario de la sesión actual
-     */
-
-    private Usuario getUsuarioActual() {
-        return obtenerUsuarioActual();
     }
 }

@@ -6,11 +6,11 @@ import java.util.ArrayList;
 
 /**
  * Gestor de lógica de negocio para la administración de departamentos.
- * Maneja todas las operaciones relacionadas con departamentos del sistema,
- * incluyendo creación, eliminación, búsqueda y listado.
+ * Trabaja exclusivamente con la entidad Departamento.
+ * No tiene dependencias de otros gestores.
  *
  * @author Sebastian Ortiz
- * @version 1.0
+ * @version 2.0
  * @since 2025
  */
 
@@ -28,7 +28,6 @@ public class GestorDepartamento {
 
     /**
      * Agrega un nuevo departamento al sistema.
-     * Valida que no exista otro departamento con el mismo correo o nombre.
      *
      * @param nombre Nombre del departamento
      * @param descripcion Descripción de las funciones del departamento
@@ -136,5 +135,66 @@ public class GestorDepartamento {
 
     public ArrayList<Departamento> obtenerDepartamentos() {
         return db.obtenerDepartamentos();
+    }
+
+    /**
+     * Obtiene una lista con los correos de todos los departamentos.
+     *
+     * @return ArrayList con los correos de los departamentos
+     */
+
+    public ArrayList<String> obtenerCorreosDepartamentos() {
+        ArrayList<String> correos = new ArrayList<>();
+        for (Departamento d: obtenerDepartamentos()) {
+            correos.add(d.getCorreo());
+        }
+        return correos;
+    }
+
+    /**
+     * Obtiene los detalles de un departamento específico en formato de array.
+     *
+     * @param correoDepartamento Correo del departamento
+     * @return Array con [nombre, correo, descripcion] o null si no existe
+     */
+
+    public String[] obtenerDetallesDepartamento(String correoDepartamento) {
+        Departamento d = buscarPorCorreo(correoDepartamento);
+
+        if (d == null) {
+            return null;
+        }
+
+        return new String[]{
+                d.getNombre(),
+                d.getCorreo(),
+                d.getDescripcion(),
+        };
+    }
+
+    /**
+     * Convierte la lista de departamentos a formato de array para tablas.
+     *
+     * @return ArrayList de arrays con los datos de cada departamento
+     */
+
+    public ArrayList<String[]> obtenerTodosDepartamentosFormato() {
+        ArrayList<Departamento> departamentos = obtenerDepartamentos();
+        ArrayList<String[]> resultado = new ArrayList<>();
+
+        if (departamentos == null || departamentos.isEmpty()) {
+            return resultado;
+        }
+
+        for (Departamento d : departamentos) {
+            String[] datos = {
+                    d.getNombre(),
+                    d.getCorreo(),
+                    d.getDescripcion(),
+            };
+            resultado.add(datos);
+        }
+
+        return resultado;
     }
 }

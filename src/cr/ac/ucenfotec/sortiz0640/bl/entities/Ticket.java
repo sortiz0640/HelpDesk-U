@@ -50,7 +50,6 @@ public class Ticket {
         this.estado = EstadoTicket.NUEVO;
         this.usuario = usuario;
         this.departamento = departamento;
-        setCategorias(descripcion);
     }
 
     public String getAsunto() {
@@ -107,11 +106,9 @@ public class Ticket {
         this.id = id;
     }
 
-    public void setCategorias(String descripcion) {
-        CategorizarTiquete categorizador = new CategorizarTiquete();
-        String[] categorias = categorizador.inicCategorizacion(descripcion);
-        this.categoriaTecnica = categorias[0];
-        this.categoriaEmocional = categorias[1];
+    public void setCategorias(String tecnica, String emocional) {
+        this.categoriaTecnica = tecnica;
+        this.categoriaEmocional = emocional;
     }
 
     public String getCategoriaEmocional() {
