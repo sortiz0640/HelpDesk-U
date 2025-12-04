@@ -2,12 +2,14 @@ package cr.ac.ucenfotec.sortiz0640.dl;
 
 import cr.ac.ucenfotec.dbaccess.AccessDB;
 import cr.ac.ucenfotec.dbaccess.Connector;
+import cr.ac.ucenfotec.sortiz0640.bl.entities.CategoriaTicket;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.DataAccessObject;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
 import cr.ac.ucenfotec.sortiz0640.bl.util.ListaRoles;
+import cr.ac.ucenfotec.sortiz0640.bl.util.TipoCategoria;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,10 +49,29 @@ public class TicketDAO extends DataAccessObject<Ticket> {
                 "'" + ticket.getEstado() + "', " +
                 "'" + ticket.getUsuario().getCorreo() + "', " +
                 "'" + ticket.getDepartamento().getCorreo() + "', " +
-                "'" + ticket.getCategoriaTecnica() + "', " +
-                "'" + ticket.getCategoriaEmocional() + "')";
+                "'" + ticket.getTecnica().getNombre() + "', " +
+                "'" + ticket.getEmocion().getNombre() + "', " + "')";
 
         DATA_ACCESS.ejecutar(query);
+
+        // Guardar las palabras detonantes técnicas
+        if (ticket.getTecnica() != null && ticket.getTecnica().getPalabrasDetonantes() != null) {
+            for (String palabra : ticket.getTecnica().getPalabrasDetonantes()) {
+                String queryPalabra = "INSERT INTO ticket_palabras_detonantes (ticketId, palabra, tipoCategoria) " +
+                        "VALUES ('" + ticket.getId() + "', '" + palabra + "', 'TECNICA')";
+                DATA_ACCESS.ejecutar(queryPalabra);
+            }
+        }
+
+        // Guardar las palabras detonantes emocionales
+        if (ticket.getEmocion() != null && ticket.getEmocion().getPalabrasDetonantes() != null) {
+            for (String palabra : ticket.getEmocion().getPalabrasDetonantes()) {
+                String queryPalabra = "INSERT INTO ticket_palabras_detonantes (ticketId, palabra, tipoCategoria) " +
+                        "VALUES ('" + ticket.getId() + "', '" + palabra + "', 'EMOCIONAL')";
+                DATA_ACCESS.ejecutar(queryPalabra);
+            }
+        }
+
         return true;
     }
 
@@ -64,86 +85,225 @@ public class TicketDAO extends DataAccessObject<Ticket> {
         String query = "DELETE FROM tiquetes WHERE id = '" + id + "'";
         DATA_ACCESS.ejecutar(query);
 
+
+
         return true;
 
     }
-
     @Override
     public Ticket buscar(String id) throws SQLException {
 
-        String query = "SELECT * FROM tiquetes WHERE id = '" + id + "'";
+        // Query que trae toda la información del ticket, usuario, departamento y palabras detonantes
+        String query = "SELECT " +
+                "t.id, " +
+                "t.asunto, " +
+                "t.descripcion, " +
+                "t.estado, " +
+                "t.correoUsuario, " +
+                "t.correoDepartamento, " +
+                "t.categoriaTecnica, " +
+                "t.categoriaEmocional, " +
+                "u.correo AS usuarioCorreo, " +
+                "u.nombre AS usuarioNombre, " +
+                "u.apellidos AS usuarioApellidos, " +
+                "u.password AS usuarioPassword, " +
+                "u.rol AS usuarioRol, " +
+                "d.correo AS departamentoCorreo, " +
+                "d.nombre AS departamentoNombre, " +
+                "d.descripcion AS departamentoDescripcion, " +
+                "tpd.palabra AS palabraDetonante, " +
+                "tpd.tipoCategoria AS tipoPalabra " +
+                "FROM tiquetes t " +
+                "INNER JOIN usuarios u ON t.correoUsuario = u.correo " +
+                "INNER JOIN departamentos d ON t.correoDepartamento = d.correo " +
+                "LEFT JOIN ticket_palabras_detonantes tpd ON t.id = tpd.ticketId " +
+                "WHERE t.id = '" + id + "' " +
+                "ORDER BY tpd.tipoCategoria";
+
         ResultSet res = DATA_ACCESS.ejectuarRS(query);
 
-        if (res.next()) {
-            Ticket ticket = new Ticket();
-            ticket.setId(res.getString("id"));
-            ticket.setAsunto(res.getString("asunto"));
-            ticket.setDescripcion(res.getString("descripcion"));
-            ticket.setEstado(EstadoTicket.valueOf(res.getString("estado")));
-            ticket.setUsuario(USUARIO_DAO.buscar(res.getString("correoUsuario")));
-            ticket.setDepartamento(DEPARTAMENTO_DAO.buscar(res.getString("correoDepartamento")));
-            ticket.setCategorias(res.getString("categoriaTecnica"), res.getString("categoriaEmocional"));
+        Ticket ticket = null;
+        ArrayList<String> palabrasTecnicas = new ArrayList<>();
+        ArrayList<String> palabrasEmocionales = new ArrayList<>();
+        String categoriaTecnicaNombre = null;
+        String categoriaEmocionalNombre = null;
 
-            return ticket;
+        while (res.next()) {
+            // Si es la primera fila, crear el ticket y sus objetos relacionados
+            if (ticket == null) {
+                ticket = new Ticket();
+                ticket.setId(res.getString("id"));
+                ticket.setAsunto(res.getString("asunto"));
+                ticket.setDescripcion(res.getString("descripcion"));
+                ticket.setEstado(EstadoTicket.valueOf(res.getString("estado")));
+
+                // Guardar nombres de categorías
+                categoriaTecnicaNombre = res.getString("categoriaTecnica");
+                categoriaEmocionalNombre = res.getString("categoriaEmocional");
+
+                // Crear el usuario desde el ResultSet
+                Usuario usuario = new Usuario();
+                usuario.setCorreo(res.getString("usuarioCorreo"));
+                usuario.setNombre(res.getString("usuarioNombre"));
+                usuario.setApellidos(res.getString("usuarioApellidos"));
+                usuario.setPassword(res.getString("usuarioPassword"));
+                usuario.setRol(ListaRoles.valueOf(res.getString("usuarioRol")));
+                ticket.setUsuario(usuario);
+
+                // Crear el departamento desde el ResultSet
+                Departamento departamento = new Departamento();
+                departamento.setCorreo(res.getString("departamentoCorreo"));
+                departamento.setNombre(res.getString("departamentoNombre"));
+                departamento.setDescripcion(res.getString("departamentoDescripcion"));
+                ticket.setDepartamento(departamento);
+            }
+
+            // Agregar las palabras detonantes según el tipo
+            String palabraDetonante = res.getString("palabraDetonante");
+            String tipoPalabra = res.getString("tipoPalabra");
+
+            if (palabraDetonante != null && tipoPalabra != null) {
+                if (tipoPalabra.equals("TECNICA")) {
+                    palabrasTecnicas.add(palabraDetonante);
+                } else if (tipoPalabra.equals("EMOCIONAL")) {
+                    palabrasEmocionales.add(palabraDetonante);
+                }
+            }
         }
 
-        return null;
+        // Si se encontró el ticket, asignar las categorías con palabras detonantes
+        if (ticket != null) {
+            CategoriaTicket categoriaTecnica = new CategoriaTicket(categoriaTecnicaNombre, palabrasTecnicas);
+            categoriaTecnica.setTipo(TipoCategoria.TECNICO);
+            ticket.setTecnica(categoriaTecnica);
 
+            CategoriaTicket categoriaEmocional = new CategoriaTicket(categoriaEmocionalNombre, palabrasEmocionales);
+            categoriaEmocional.setTipo(TipoCategoria.EMOCIONAL);
+            ticket.setEmocion(categoriaEmocional);
+        }
+
+        return ticket;
     }
 
     @Override
     public ArrayList<Ticket> obtenerTodos() throws SQLException {
 
         ArrayList<Ticket> tickets = new ArrayList<>();
-        String query = "select \n" +
-                "id,\n" +
-                "asunto,\n" +
-                "t.descripcion,\n" +
-                "estado,\n" +
-                "correoUsuario,\n" +
-                "correoDepartamento,\n" +
-                "categoriaTecnica,\n" +
-                "categoriaEmocional,\n" +
-                "u.correo AS usuarioCorreo,\n" +
-                "u.nombre AS usuarioNombre,\n" +
-                "u.apellidos AS usuarioApellidos,\n" +
-                "u.password as usuarioPassword,\n" +
-                "u.rol as usuarioRol,\n" +
-                "d.correo as departamentoCorreo,\n" +
-                "d.nombre as departamentoNombre,\n" +
-                "d.descripcion as departamentoDescripcion\n" +
-                "from tiquetes t INNER JOIN usuarios u on t.correoUsuario = u.correo INNER JOIN departamentos d on t.correoDepartamento = d.correo";
+
+        // Query que trae toda la información incluyendo palabras detonantes
+        String query = "SELECT " +
+                "t.id, " +
+                "t.asunto, " +
+                "t.descripcion, " +
+                "t.estado, " +
+                "t.correoUsuario, " +
+                "t.correoDepartamento, " +
+                "t.categoriaTecnica, " +
+                "t.categoriaEmocional, " +
+                "u.correo AS usuarioCorreo, " +
+                "u.nombre AS usuarioNombre, " +
+                "u.apellidos AS usuarioApellidos, " +
+                "u.password AS usuarioPassword, " +
+                "u.rol AS usuarioRol, " +
+                "d.correo AS departamentoCorreo, " +
+                "d.nombre AS departamentoNombre, " +
+                "d.descripcion AS departamentoDescripcion, " +
+                "tpd.palabra AS palabraDetonante, " +
+                "tpd.tipoCategoria AS tipoPalabra " +
+                "FROM tiquetes t " +
+                "INNER JOIN usuarios u ON t.correoUsuario = u.correo " +
+                "INNER JOIN departamentos d ON t.correoDepartamento = d.correo " +
+                "LEFT JOIN ticket_palabras_detonantes tpd ON t.id = tpd.ticketId " +
+                "ORDER BY t.id, tpd.tipoCategoria";
 
         ResultSet res = DATA_ACCESS.ejectuarRS(query);
 
+        // Variables para controlar el ticket actual
+        String ticketIdActual = null;
+        Ticket ticketActual = null;
+        ArrayList<String> palabrasTecnicas = new ArrayList<>();
+        ArrayList<String> palabrasEmocionales = new ArrayList<>();
+        String categoriaTecnicaNombre = null;
+        String categoriaEmocionalNombre = null;
+
         while (res.next()) {
-            // Crear el ticket
-            Ticket ticket = new Ticket();
-            ticket.setId(res.getString("id"));
-            ticket.setAsunto(res.getString("asunto"));
-            ticket.setDescripcion(res.getString("descripcion"));
-            ticket.setEstado(EstadoTicket.valueOf(res.getString("estado")));
-            ticket.setCategorias(res.getString("categoriaTecnica"), res.getString("categoriaEmocional"));
+            String ticketId = res.getString("id");
 
-            // Crear el usuario desde el ResultSet
-            Usuario usuario = new Usuario();
-            usuario.setCorreo(res.getString("usuarioCorreo"));
-            usuario.setNombre(res.getString("usuarioNombre"));
-            usuario.setApellidos(res.getString("usuarioApellidos"));
-            usuario.setPassword(res.getString("usuarioPassword"));
-            usuario.setRol(ListaRoles.valueOf(res.getString("usuarioRol")));
-            ticket.setUsuario(usuario);
+            // Si cambiamos de ticket, guardamos el anterior y creamos uno nuevo
+            if (ticketIdActual != null && !ticketId.equals(ticketIdActual)) {
+                // Asignar categorías al ticket anterior
+                CategoriaTicket categoriaTecnica = new CategoriaTicket(categoriaTecnicaNombre, palabrasTecnicas);
+                categoriaTecnica.setTipo(TipoCategoria.TECNICO);
+                ticketActual.setTecnica(categoriaTecnica);
 
-            // Crear el departamento desde el ResultSet
-            Departamento departamento = new Departamento();
-            departamento.setCorreo(res.getString("departamentoCorreo"));
-            departamento.setNombre(res.getString("departamentoNombre"));
-            departamento.setDescripcion(res.getString("departamentoDescripcion"));
-            ticket.setDepartamento(departamento);
+                CategoriaTicket categoriaEmocional = new CategoriaTicket(categoriaEmocionalNombre, palabrasEmocionales);
+                categoriaEmocional.setTipo(TipoCategoria.EMOCIONAL);
+                ticketActual.setEmocion(categoriaEmocional);
 
-            tickets.add(ticket);
+                // Agregar el ticket a la lista
+                tickets.add(ticketActual);
+
+                // Resetear las listas de palabras
+                palabrasTecnicas = new ArrayList<>();
+                palabrasEmocionales = new ArrayList<>();
+            }
+
+            // Si es un ticket nuevo, crear la instancia
+            if (!ticketId.equals(ticketIdActual)) {
+                ticketActual = new Ticket();
+                ticketActual.setId(ticketId);
+                ticketActual.setAsunto(res.getString("asunto"));
+                ticketActual.setDescripcion(res.getString("descripcion"));
+                ticketActual.setEstado(EstadoTicket.valueOf(res.getString("estado")));
+
+                // Guardar nombres de categorías
+                categoriaTecnicaNombre = res.getString("categoriaTecnica");
+                categoriaEmocionalNombre = res.getString("categoriaEmocional");
+
+                // Crear el usuario desde el ResultSet
+                Usuario usuario = new Usuario();
+                usuario.setCorreo(res.getString("usuarioCorreo"));
+                usuario.setNombre(res.getString("usuarioNombre"));
+                usuario.setApellidos(res.getString("usuarioApellidos"));
+                usuario.setPassword(res.getString("usuarioPassword"));
+                usuario.setRol(ListaRoles.valueOf(res.getString("usuarioRol")));
+                ticketActual.setUsuario(usuario);
+
+                // Crear el departamento desde el ResultSet
+                Departamento departamento = new Departamento();
+                departamento.setCorreo(res.getString("departamentoCorreo"));
+                departamento.setNombre(res.getString("departamentoNombre"));
+                departamento.setDescripcion(res.getString("departamentoDescripcion"));
+                ticketActual.setDepartamento(departamento);
+
+                ticketIdActual = ticketId;
+            }
+
+            // Agregar las palabras detonantes según el tipo
+            String palabraDetonante = res.getString("palabraDetonante");
+            String tipoPalabra = res.getString("tipoPalabra");
+
+            if (palabraDetonante != null && tipoPalabra != null) {
+                if (tipoPalabra.equals("TECNICA")) {
+                    palabrasTecnicas.add(palabraDetonante);
+                } else if (tipoPalabra.equals("EMOCIONAL")) {
+                    palabrasEmocionales.add(palabraDetonante);
+                }
+            }
         }
 
+        // No olvidar agregar el último ticket procesado
+        if (ticketActual != null) {
+            CategoriaTicket categoriaTecnica = new CategoriaTicket(categoriaTecnicaNombre, palabrasTecnicas);
+            categoriaTecnica.setTipo(TipoCategoria.TECNICO);
+            ticketActual.setTecnica(categoriaTecnica);
+
+            CategoriaTicket categoriaEmocional = new CategoriaTicket(categoriaEmocionalNombre, palabrasEmocionales);
+            categoriaEmocional.setTipo(TipoCategoria.EMOCIONAL);
+            ticketActual.setEmocion(categoriaEmocional);
+
+            tickets.add(ticketActual);
+        }
 
         return tickets;
     }
@@ -164,5 +324,20 @@ public class TicketDAO extends DataAccessObject<Ticket> {
                 "WHERE id = '" + ticketId + "'";
         DATA_ACCESS.ejecutar(query);
         return true;
+    }
+
+    // Método auxiliar para obtener palabras detonantes
+    private ArrayList<String> obtenerPalabrasDetonantes(String ticketId, String tipoCategoria) throws SQLException {
+        ArrayList<String> palabras = new ArrayList<>();
+        String query = "SELECT palabra FROM ticket_palabras_detonantes " +
+                "WHERE ticketId = '" + ticketId + "' " +
+                "AND tipoCategoria = '" + tipoCategoria + "'";
+        ResultSet res = DATA_ACCESS.ejectuarRS(query);
+
+        while (res.next()) {
+            palabras.add(res.getString("palabra"));
+        }
+
+        return palabras;
     }
 }
