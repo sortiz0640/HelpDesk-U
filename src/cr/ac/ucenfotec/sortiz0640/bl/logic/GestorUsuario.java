@@ -3,7 +3,6 @@ package cr.ac.ucenfotec.sortiz0640.bl.logic;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.ConfigPropertiesReader;
 import cr.ac.ucenfotec.sortiz0640.bl.util.ListaRoles;
-import cr.ac.ucenfotec.sortiz0640.dl.DataUsuario;
 import cr.ac.ucenfotec.sortiz0640.dl.UsuarioDAO;
 
 import java.sql.SQLException;

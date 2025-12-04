@@ -11,6 +11,7 @@ public class FormateadorTexto {
     };
 
     // Método principal que procesa el texto completo
+
     public String[] procesarTexto(String texto) {
         String textoLimpio = limpiarTexto(texto);
         String[] tokens = dividirEnPalabras(textoLimpio);
@@ -20,6 +21,7 @@ public class FormateadorTexto {
     }
 
     // Limpia caracteres especiales y convierte a minúsculas
+
     private String limpiarTexto(String texto) {
         String textoLimpio = "";
 
@@ -27,6 +29,7 @@ public class FormateadorTexto {
             char caracter = texto.charAt(i);
 
             // Solo mantener letras y espacios
+
             if (Character.isLetter(caracter) || caracter == ' ') {
                 textoLimpio += Character.toLowerCase(caracter);
             } else {
@@ -38,6 +41,7 @@ public class FormateadorTexto {
     }
 
     // Divide el texto en palabras individuales
+
     private String[] dividirEnPalabras(String texto) {
         ArrayList<String> palabras = new ArrayList<>();
         String palabraActual = "";
@@ -56,6 +60,7 @@ public class FormateadorTexto {
         }
 
         // Agregar la última palabra si existe
+
         if (palabraActual.length() > 0) {
             palabras.add(palabraActual);
         }
@@ -64,6 +69,7 @@ public class FormateadorTexto {
     }
 
     // Elimina palabras comunes sin significado (stop words)
+
     private String[] eliminarStopWords(String[] tokens) {
         ArrayList<String> tokensFiltrados = new ArrayList<>();
 
@@ -89,6 +95,7 @@ public class FormateadorTexto {
     }
 
     // Convierte ArrayList a array normal
+
     private String[] convertirListaAArray(ArrayList<String> lista) {
         String[] array = new String[lista.size()];
 
