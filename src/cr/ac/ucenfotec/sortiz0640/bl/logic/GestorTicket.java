@@ -6,6 +6,7 @@ import cr.ac.ucenfotec.sortiz0640.bl.entities.Ticket;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.ConfigPropertiesReader;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
+import cr.ac.ucenfotec.sortiz0640.bl.util.TipoCategoria;
 import cr.ac.ucenfotec.sortiz0640.dl.TicketDAO;
 
 import java.sql.SQLException;
@@ -48,9 +49,6 @@ public class GestorTicket {
         nuevoTicket.setTecnica(categorizador.obtenerCategoriaTecnica(descripcion));
         nuevoTicket.setEmocion(categorizador.obtenerCategoriaEmocional(descripcion));
 
-        System.out.println(nuevoTicket.getTecnica().getPalabrasDetonantes());
-        System.out.println(nuevoTicket.getEmocion().getPalabrasDetonantes());
-
         return db.agregar(nuevoTicket);
     }
 
@@ -78,9 +76,6 @@ public class GestorTicket {
         return db.obtenerTodos();
     }
 
-    public Ticket buscarPorId(String ticketId) throws SQLException {
-        return db.buscar(ticketId);
-    }
 
     public void eliminarPorCorreoDepartamento(String correoDepartamento) throws SQLException {
         db.eliminar(correoDepartamento);
@@ -97,26 +92,6 @@ public class GestorTicket {
         }
 
         return filtrados;
-    }
-
-    public String[] obtenerDetallesTicket(String ticketId) throws SQLException {
-        Ticket t = buscarPorId(ticketId);
-
-        if (t == null) {
-            return null;
-        }
-
-        return new String[]{
-                t.getId(),
-                t.getAsunto(),
-                t.getDescripcion(),
-                t.getDepartamento().getCorreo(),
-                t.getUsuario().getCorreo(),
-                t.getTecnica().getNombre(),
-                t.getEmocion().getNombre(),
-                t.getEstado().toString(),
-                t.getEstado().toString()
-        };
     }
 
     public ArrayList<String[]> obtenerTodosTicketsFormato() throws SQLException {
@@ -169,7 +144,7 @@ public class GestorTicket {
         return resultado;
     }
 
-    public ArrayList<String> obtenerPalabrasDetonantes(String ticketId, String categoria) throws SQLException {
+    public ArrayList<String> obtenerPalabrasDetonantes(String ticketId, TipoCategoria categoria) throws SQLException {
         return db.obtenerPalabrasDetonantes(ticketId, categoria);
     }
 }

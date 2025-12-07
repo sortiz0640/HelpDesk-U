@@ -3,6 +3,8 @@ package cr.ac.ucenfotec.sortiz0640.bl.logic;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Departamento;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
+import cr.ac.ucenfotec.sortiz0640.bl.util.TipoCategoria;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -112,10 +114,6 @@ public class GestorApp {
         return gestorTicket.eliminarPorId(ticketId);
     }
 
-//    public String[] obtenerDetallesTicket(String ticketId) {
-//        return gestorTicket.obtenerDetallesTicket(ticketId);
-//    }
-
     public ArrayList<String[]> obtenerTodosTicketsFormato() throws SQLException {
         return gestorTicket.obtenerTodosTicketsFormato();
     }
@@ -142,14 +140,14 @@ public class GestorApp {
      * Obtiene las palabras detonantes técnicas de un ticket
      */
     public ArrayList<String> obtenerPalabrasDetonantesTecnicas(String ticketId) throws SQLException {
-        return gestorTicket.obtenerPalabrasDetonantes(ticketId, "TECNICA");
+        return gestorTicket.obtenerPalabrasDetonantes(ticketId, TipoCategoria.TECNICO);
     }
 
     /**
      * Obtiene las palabras detonantes emocionales de un ticket
      */
     public ArrayList<String> obtenerPalabrasDetonantesEmocionales(String ticketId) throws SQLException {
-        return gestorTicket.obtenerPalabrasDetonantes(ticketId, "EMOCIONAL");
+        return gestorTicket.obtenerPalabrasDetonantes(ticketId, TipoCategoria.EMOCIONAL);
     }
 
     // ============================================

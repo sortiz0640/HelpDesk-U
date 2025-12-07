@@ -81,8 +81,6 @@ public class TicketDAO extends DataAccessObject<Ticket> {
         String query = "DELETE FROM tiquetes WHERE id = '" + id + "'";
         DATA_ACCESS.ejecutar(query);
 
-
-
         return true;
 
     }
@@ -125,7 +123,7 @@ public class TicketDAO extends DataAccessObject<Ticket> {
         String categoriaEmocionalNombre = null;
 
         while (res.next()) {
-            // Si es la primera fila, crear el ticket y sus objetos relacionados
+
             if (ticket == null) {
                 ticket = new Ticket();
                 ticket.setId(res.getString("id"));
@@ -133,11 +131,9 @@ public class TicketDAO extends DataAccessObject<Ticket> {
                 ticket.setDescripcion(res.getString("descripcion"));
                 ticket.setEstado(EstadoTicket.valueOf(res.getString("estado")));
 
-                // Guardar nombres de categorías
                 categoriaTecnicaNombre = res.getString("categoriaTecnica");
                 categoriaEmocionalNombre = res.getString("categoriaEmocional");
 
-                // Crear el usuario desde el ResultSet
                 Usuario usuario = new Usuario();
                 usuario.setCorreo(res.getString("usuarioCorreo"));
                 usuario.setNombre(res.getString("usuarioNombre"));
@@ -146,7 +142,6 @@ public class TicketDAO extends DataAccessObject<Ticket> {
                 usuario.setRol(ListaRoles.valueOf(res.getString("usuarioRol")));
                 ticket.setUsuario(usuario);
 
-                // Crear el departamento desde el ResultSet
                 Departamento departamento = new Departamento();
                 departamento.setCorreo(res.getString("departamentoCorreo"));
                 departamento.setNombre(res.getString("departamentoNombre"));
@@ -154,7 +149,6 @@ public class TicketDAO extends DataAccessObject<Ticket> {
                 ticket.setDepartamento(departamento);
             }
 
-            // Agregar las palabras detonantes según el tipo
             String palabraDetonante = res.getString("palabraDetonante");
             String tipoPalabra = res.getString("tipoPalabra");
 
@@ -167,7 +161,6 @@ public class TicketDAO extends DataAccessObject<Ticket> {
             }
         }
 
-        // Si se encontró el ticket, asignar las categorías con palabras detonantes
         if (ticket != null) {
             CategoriaTicket categoriaTecnica = new CategoriaTicket(categoriaTecnicaNombre, palabrasTecnicas);
             categoriaTecnica.setTipo(TipoCategoria.TECNICO);
@@ -186,7 +179,6 @@ public class TicketDAO extends DataAccessObject<Ticket> {
 
         ArrayList<Ticket> tickets = new ArrayList<>();
 
-        // Query que trae toda la información incluyendo palabras detonantes
         String query = "SELECT " +
                 "t.id, " +
                 "t.asunto, " +
@@ -214,7 +206,6 @@ public class TicketDAO extends DataAccessObject<Ticket> {
 
         ResultSet res = DATA_ACCESS.ejectuarRS(query);
 
-        // Variables para controlar el ticket actual
         String ticketIdActual = null;
         Ticket ticketActual = null;
         ArrayList<String> palabrasTecnicas = new ArrayList<>();
@@ -225,9 +216,8 @@ public class TicketDAO extends DataAccessObject<Ticket> {
         while (res.next()) {
             String ticketId = res.getString("id");
 
-            // Si cambiamos de ticket, guardamos el anterior y creamos uno nuevo
             if (ticketIdActual != null && !ticketId.equals(ticketIdActual)) {
-                // Asignar categorías al ticket anterior
+
                 CategoriaTicket categoriaTecnica = new CategoriaTicket(categoriaTecnicaNombre, palabrasTecnicas);
                 categoriaTecnica.setTipo(TipoCategoria.TECNICO);
                 ticketActual.setTecnica(categoriaTecnica);
@@ -235,16 +225,12 @@ public class TicketDAO extends DataAccessObject<Ticket> {
                 CategoriaTicket categoriaEmocional = new CategoriaTicket(categoriaEmocionalNombre, palabrasEmocionales);
                 categoriaEmocional.setTipo(TipoCategoria.EMOCIONAL);
                 ticketActual.setEmocion(categoriaEmocional);
-
-                // Agregar el ticket a la lista
                 tickets.add(ticketActual);
 
-                // Resetear las listas de palabras
                 palabrasTecnicas = new ArrayList<>();
                 palabrasEmocionales = new ArrayList<>();
             }
 
-            // Si es un ticket nuevo, crear la instancia
             if (!ticketId.equals(ticketIdActual)) {
                 ticketActual = new Ticket();
                 ticketActual.setId(ticketId);
@@ -252,11 +238,9 @@ public class TicketDAO extends DataAccessObject<Ticket> {
                 ticketActual.setDescripcion(res.getString("descripcion"));
                 ticketActual.setEstado(EstadoTicket.valueOf(res.getString("estado")));
 
-                // Guardar nombres de categorías
                 categoriaTecnicaNombre = res.getString("categoriaTecnica");
                 categoriaEmocionalNombre = res.getString("categoriaEmocional");
 
-                // Crear el usuario desde el ResultSet
                 Usuario usuario = new Usuario();
                 usuario.setCorreo(res.getString("usuarioCorreo"));
                 usuario.setNombre(res.getString("usuarioNombre"));
@@ -265,7 +249,6 @@ public class TicketDAO extends DataAccessObject<Ticket> {
                 usuario.setRol(ListaRoles.valueOf(res.getString("usuarioRol")));
                 ticketActual.setUsuario(usuario);
 
-                // Crear el departamento desde el ResultSet
                 Departamento departamento = new Departamento();
                 departamento.setCorreo(res.getString("departamentoCorreo"));
                 departamento.setNombre(res.getString("departamentoNombre"));
@@ -275,7 +258,6 @@ public class TicketDAO extends DataAccessObject<Ticket> {
                 ticketIdActual = ticketId;
             }
 
-            // Agregar las palabras detonantes según el tipo
             String palabraDetonante = res.getString("palabraDetonante");
             String tipoPalabra = res.getString("tipoPalabra");
 
@@ -288,7 +270,6 @@ public class TicketDAO extends DataAccessObject<Ticket> {
             }
         }
 
-        // No olvidar agregar el último ticket procesado
         if (ticketActual != null) {
             CategoriaTicket categoriaTecnica = new CategoriaTicket(categoriaTecnicaNombre, palabrasTecnicas);
             categoriaTecnica.setTipo(TipoCategoria.TECNICO);
@@ -316,18 +297,15 @@ public class TicketDAO extends DataAccessObject<Ticket> {
             return false;
         }
 
-        String query = "UPDATE tiquetes SET estado = '" + nuevoEstado.name() + "' " +
-                "WHERE id = '" + ticketId + "'";
+        String query = "UPDATE tiquetes SET estado = '" + nuevoEstado.name() + "' " + "WHERE id = '" + ticketId + "'";
         DATA_ACCESS.ejecutar(query);
         return true;
     }
 
     // Método auxiliar para obtener palabras detonantes
-    public ArrayList<String> obtenerPalabrasDetonantes(String ticketId, String tipoCategoria) throws SQLException {
+    public ArrayList<String> obtenerPalabrasDetonantes(String ticketId, TipoCategoria tipoCategoria) throws SQLException {
         ArrayList<String> palabras = new ArrayList<>();
-        String query = "SELECT palabra FROM ticket_palabras_detonantes " +
-                "WHERE ticketId = '" + ticketId + "' " +
-                "AND tipoCategoria = '" + tipoCategoria + "'";
+        String query = "SELECT palabra FROM ticket_palabras_detonantes " + "WHERE ticketId = '" + ticketId + "' " +  "AND tipoCategoria = '" + tipoCategoria.toString() + "'";
         ResultSet res = DATA_ACCESS.ejectuarRS(query);
 
         while (res.next()) {
