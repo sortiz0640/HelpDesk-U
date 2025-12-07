@@ -20,7 +20,8 @@ public class CategoriasDAO {
     public HashMap<String, ArrayList<String>> obtenerCategoriasTecnicas() throws SQLException {
 
         HashMap<String, ArrayList<String>> palabrasTecnicas = new HashMap<>();
-        String query =  "SELECT * FROM palabras_tecnicas PT INNER JOIN categorias C ON PT.idCategoria = C.idCategoria ";
+        String query = "SELECT pt.palabra, c.categoria FROM palabras_tecnicas pt " +
+                "INNER JOIN categorias c ON pt.idCategoria = c.idCategoria";
         ResultSet res = DATA_ACCESS.ejectuarRS(query);
 
         while (res.next()) {
@@ -41,13 +42,13 @@ public class CategoriasDAO {
     public HashMap<String, ArrayList<String>> obtenerCategoriasEmocionales() throws SQLException {
 
         HashMap<String, ArrayList<String>> palabrasEmocionales = new HashMap<>();
-        String query =  "SELECT * FROM palabras_emocionales PT INNER JOIN categorias C ON PT.idCategoria = C.idCategoria ";
+        String query = "SELECT palabra, tipo_emocion FROM palabras_emociones";
         ResultSet res = DATA_ACCESS.ejectuarRS(query);
 
         while (res.next()) {
 
             String palabra = res.getString("palabra");
-            String categoria = res.getString("categoria");
+            String categoria = res.getString("tipo_emocion");
 
             if (!palabrasEmocionales.containsKey(categoria)) {
                 palabrasEmocionales.put(categoria, new ArrayList<>());

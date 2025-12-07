@@ -138,6 +138,20 @@ public class GestorApp {
         return gestorTicket.actualizarEstado(ticketId, nuevoEstado);
     }
 
+    /**
+     * Obtiene las palabras detonantes técnicas de un ticket
+     */
+    public ArrayList<String> obtenerPalabrasDetonantesTecnicas(String ticketId) throws SQLException {
+        return gestorTicket.obtenerPalabrasDetonantes(ticketId, "TECNICA");
+    }
+
+    /**
+     * Obtiene las palabras detonantes emocionales de un ticket
+     */
+    public ArrayList<String> obtenerPalabrasDetonantesEmocionales(String ticketId) throws SQLException {
+        return gestorTicket.obtenerPalabrasDetonantes(ticketId, "EMOCIONAL");
+    }
+
     // ============================================
     // OPERACIONES DE SESIÓN
     // ============================================
@@ -164,4 +178,6 @@ public class GestorApp {
     public String obtenerCorreoUsuarioActual() {
         return gestorSesion.obtenerCorreo();
     }
+
+
 }

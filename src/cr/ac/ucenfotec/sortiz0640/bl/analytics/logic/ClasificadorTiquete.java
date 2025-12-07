@@ -59,24 +59,34 @@ public class ClasificadorTiquete {
 
     public CategoriaTicket getFrecuencia(HashMap<String, ArrayList<String>> res) {
 
-        // KeySet: Devuelve un array
+        if (res == null || res.isEmpty()) {
+            ArrayList<String> vacio = new ArrayList<>();
+            return new CategoriaTicket("OTRO", vacio);
+        }
+
         String[] vectorCategoria = res.keySet().toArray(new String[0]);
-        int[] vectorFrecuencias =  new int[vectorCategoria.length];
+        int[] vectorFrecuencias = new int[vectorCategoria.length];
 
         for (int i = 0; i < vectorCategoria.length; i++) {
             vectorFrecuencias[i] = res.get(vectorCategoria[i]).size();
         }
 
-        int max = 0;
+        int maxFrecuencia = -1;
+        int indiceMax = -1;
+
         for (int i = 0; i < vectorFrecuencias.length; i++) {
-            if (vectorFrecuencias[i] > max) {
-                max = vectorFrecuencias[i];
+            if (vectorFrecuencias[i] > maxFrecuencia) {
+                maxFrecuencia = vectorFrecuencias[i];
+                indiceMax = i;
             }
         }
 
-        CategoriaTicket categoria = new CategoriaTicket(vectorCategoria[max], res.get(vectorCategoria[max]));
-        return categoria;
+        return new CategoriaTicket(
+                vectorCategoria[indiceMax],
+                res.get(vectorCategoria[indiceMax])
+        );
     }
+
 
     public CategoriaTicket getCategoriaTecnica(String[] tokens){
         CategoriaTicket categoriaTicket = null;

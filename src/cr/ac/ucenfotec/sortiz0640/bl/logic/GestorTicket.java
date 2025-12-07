@@ -48,6 +48,9 @@ public class GestorTicket {
         nuevoTicket.setTecnica(categorizador.obtenerCategoriaTecnica(descripcion));
         nuevoTicket.setEmocion(categorizador.obtenerCategoriaEmocional(descripcion));
 
+        System.out.println(nuevoTicket.getTecnica().getPalabrasDetonantes());
+        System.out.println(nuevoTicket.getEmocion().getPalabrasDetonantes());
+
         return db.agregar(nuevoTicket);
     }
 
@@ -164,5 +167,9 @@ public class GestorTicket {
         }
 
         return resultado;
+    }
+
+    public ArrayList<String> obtenerPalabrasDetonantes(String ticketId, String categoria) throws SQLException {
+        return db.obtenerPalabrasDetonantes(ticketId, categoria);
     }
 }

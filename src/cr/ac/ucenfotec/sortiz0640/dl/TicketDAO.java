@@ -26,13 +26,9 @@ import java.util.ArrayList;
 public class TicketDAO extends DataAccessObject<Ticket> {
 
     private AccessDB DATA_ACCESS;
-    private UsuarioDAO USUARIO_DAO;
-    private DepartamentoDAO DEPARTAMENTO_DAO;
 
     public TicketDAO(String driver, String url, String username, String password) throws SQLException, ClassNotFoundException {
         this.DATA_ACCESS = Connector.getDataAccess(driver, url, username, password);
-        this.USUARIO_DAO = new UsuarioDAO(driver, url, username, password);
-        this.DEPARTAMENTO_DAO = new DepartamentoDAO(driver, url, username, password);
     }
 
     @Override
@@ -50,7 +46,7 @@ public class TicketDAO extends DataAccessObject<Ticket> {
                 "'" + ticket.getUsuario().getCorreo() + "', " +
                 "'" + ticket.getDepartamento().getCorreo() + "', " +
                 "'" + ticket.getTecnica().getNombre() + "', " +
-                "'" + ticket.getEmocion().getNombre() + "', " + "')";
+                "'" + ticket.getEmocion().getNombre() + "')";
 
         DATA_ACCESS.ejecutar(query);
 
@@ -327,7 +323,7 @@ public class TicketDAO extends DataAccessObject<Ticket> {
     }
 
     // Método auxiliar para obtener palabras detonantes
-    private ArrayList<String> obtenerPalabrasDetonantes(String ticketId, String tipoCategoria) throws SQLException {
+    public ArrayList<String> obtenerPalabrasDetonantes(String ticketId, String tipoCategoria) throws SQLException {
         ArrayList<String> palabras = new ArrayList<>();
         String query = "SELECT palabra FROM ticket_palabras_detonantes " +
                 "WHERE ticketId = '" + ticketId + "' " +
