@@ -95,7 +95,7 @@ public class ClasificadorTiquete {
                 this.clasificar(tokens, db.obtenerCategoriasTecnicas())
             );
 
-            categoriaTicket.setTipo(TipoCategoria.TECNICO);
+            categoriaTicket.setTipo(TipoCategoria.TECNICA);
 
 
         }  catch (SQLException ex) {

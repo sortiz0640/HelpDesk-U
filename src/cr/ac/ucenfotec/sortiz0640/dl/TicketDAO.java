@@ -163,7 +163,7 @@ public class TicketDAO extends DataAccessObject<Ticket> {
 
         if (ticket != null) {
             CategoriaTicket categoriaTecnica = new CategoriaTicket(categoriaTecnicaNombre, palabrasTecnicas);
-            categoriaTecnica.setTipo(TipoCategoria.TECNICO);
+            categoriaTecnica.setTipo(TipoCategoria.TECNICA);
             ticket.setTecnica(categoriaTecnica);
 
             CategoriaTicket categoriaEmocional = new CategoriaTicket(categoriaEmocionalNombre, palabrasEmocionales);
@@ -219,7 +219,7 @@ public class TicketDAO extends DataAccessObject<Ticket> {
             if (ticketIdActual != null && !ticketId.equals(ticketIdActual)) {
 
                 CategoriaTicket categoriaTecnica = new CategoriaTicket(categoriaTecnicaNombre, palabrasTecnicas);
-                categoriaTecnica.setTipo(TipoCategoria.TECNICO);
+                categoriaTecnica.setTipo(TipoCategoria.TECNICA);
                 ticketActual.setTecnica(categoriaTecnica);
 
                 CategoriaTicket categoriaEmocional = new CategoriaTicket(categoriaEmocionalNombre, palabrasEmocionales);
@@ -272,7 +272,7 @@ public class TicketDAO extends DataAccessObject<Ticket> {
 
         if (ticketActual != null) {
             CategoriaTicket categoriaTecnica = new CategoriaTicket(categoriaTecnicaNombre, palabrasTecnicas);
-            categoriaTecnica.setTipo(TipoCategoria.TECNICO);
+            categoriaTecnica.setTipo(TipoCategoria.TECNICA);
             ticketActual.setTecnica(categoriaTecnica);
 
             CategoriaTicket categoriaEmocional = new CategoriaTicket(categoriaEmocionalNombre, palabrasEmocionales);

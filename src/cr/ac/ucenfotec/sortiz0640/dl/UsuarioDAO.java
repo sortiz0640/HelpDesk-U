@@ -5,7 +5,9 @@ import cr.ac.ucenfotec.dbaccess.Connector;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.DataAccessObject;
 import cr.ac.ucenfotec.sortiz0640.bl.util.ListaRoles;
+import cr.ac.ucenfotec.sortiz0640.bl.util.PasswordEncrypt;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -28,13 +30,13 @@ public class UsuarioDAO extends DataAccessObject<Usuario> {
     }
 
     @Override
-    public boolean agregar(Usuario usuario) throws SQLException {
+    public boolean agregar(Usuario usuario) throws SQLException, NoSuchAlgorithmException {
 
         String query = "INSERT INTO usuarios (nombre, apellidos, correo, password, rol) " +
                 "VALUES ('" + usuario.getNombre() + "', " +
                 "'" + usuario.getApellidos() + "', " +
                 "'" + usuario.getCorreo() + "', " +
-                "'" + usuario.getPassword() + "', " +
+                "'" + PasswordEncrypt.encrypt(usuario.getPassword()) + "', " +
                 "'" + usuario.getRol().name() + "')";
 
         if (existe(usuario.getCorreo())) {

@@ -5,6 +5,7 @@ import cr.ac.ucenfotec.sortiz0640.bl.util.ConfigPropertiesReader;
 import cr.ac.ucenfotec.sortiz0640.bl.util.ListaRoles;
 import cr.ac.ucenfotec.sortiz0640.dl.UsuarioDAO;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -37,7 +38,7 @@ public class GestorUsuario {
         );
     }
 
-    public String agregar(String nombre, String apellidos, String correo, String password, int rolEntrada) throws SQLException {
+    public String agregar(String nombre, String apellidos, String correo, String password, int rolEntrada) throws SQLException, NoSuchAlgorithmException {
         ListaRoles rol = switch (rolEntrada) {
             case 1 -> ListaRoles.ADMIN;
             case 2 -> ListaRoles.ESTUDIANTE;

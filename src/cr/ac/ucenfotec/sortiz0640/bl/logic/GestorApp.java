@@ -6,6 +6,7 @@ import cr.ac.ucenfotec.sortiz0640.bl.util.EstadoTicket;
 import cr.ac.ucenfotec.sortiz0640.bl.util.TipoCategoria;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -46,7 +47,7 @@ public class GestorApp {
     // OPERACIONES DE USUARIO
     // ============================================
 
-    public String agregarUsuario(String nombre, String apellidos, String correo, String password, int rol) throws SQLException {
+    public String agregarUsuario(String nombre, String apellidos, String correo, String password, int rol) throws SQLException, NoSuchAlgorithmException {
         return gestorUsuario.agregar(nombre, apellidos, correo, password, rol);
     }
 
@@ -140,7 +141,7 @@ public class GestorApp {
      * Obtiene las palabras detonantes técnicas de un ticket
      */
     public ArrayList<String> obtenerPalabrasDetonantesTecnicas(String ticketId) throws SQLException {
-        return gestorTicket.obtenerPalabrasDetonantes(ticketId, TipoCategoria.TECNICO);
+        return gestorTicket.obtenerPalabrasDetonantes(ticketId, TipoCategoria.TECNICA);
     }
 
     /**
@@ -154,7 +155,7 @@ public class GestorApp {
     // OPERACIONES DE SESIÓN
     // ============================================
 
-    public boolean iniciarSesion(String correo, String password) throws SQLException {
+    public boolean iniciarSesion(String correo, String password) throws SQLException, NoSuchAlgorithmException {
         // Obtiene la lista de usuarios de GestorUsuario
         ArrayList<Usuario> usuarios = gestorUsuario.obtenerUsuarios();
         // Coordina el inicio de sesión pasando los usuarios a GestorSesion

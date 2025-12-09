@@ -1,8 +1,12 @@
 package cr.ac.ucenfotec.sortiz0640.bl.logic;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.ListaRoles;
+import cr.ac.ucenfotec.sortiz0640.bl.util.PasswordEncrypt;
+
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
@@ -40,12 +44,17 @@ public class GestorSesion {
 
     public boolean iniciarSesion(String correo, String password, ArrayList<Usuario> usuarios) {
         for (Usuario u : usuarios) {
-            if (u.getCorreo().equals(correo) && u.getPassword().equals(password)) {
-                usuarioActual = u;
-                return true;
+            if (u.getCorreo().equals(correo)) {
+                BCrypt.Result result = BCrypt.verifyer().verify(
+                        password.toCharArray(),
+                        u.getPassword()
+                );
+                if (result.verified) {
+                    usuarioActual = u;
+                    return true;
+                }
             }
         }
-
         return false;
     }
 
