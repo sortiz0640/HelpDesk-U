@@ -40,21 +40,18 @@ public class ClasificadorTiquete {
                 res.get(categoria).add(token);
             }
         }
-
         return res;
-
     }
 
-    private String buscarCategoriaEnHashMap(String token,  HashMap<String, ArrayList<String>> hm) {
-
-        for (String key : hm.keySet()) {
-            if (hm.get(key).contains(token)) {
-                return key;
+    private String buscarCategoriaEnHashMap(String token, HashMap<String, ArrayList<String>> diccionario) {
+        // Recorre todas las llaves (Categorias) del mapa una por una
+        for (String key : diccionario.keySet()) {
+            // hm.get(key) obtiene la lista de palabras de esa categoría
+            if (diccionario.get(key).contains(token)) {
+                return key; // returns nombre categoria
             }
         }
-
         return null;
-
     }
 
     public CategoriaTicket getFrecuencia(HashMap<String, ArrayList<String>> res) {

@@ -20,8 +20,7 @@ public class CategoriasDAO {
     public HashMap<String, ArrayList<String>> obtenerCategoriasTecnicas() throws SQLException {
 
         HashMap<String, ArrayList<String>> palabrasTecnicas = new HashMap<>();
-        String query = "SELECT pt.palabra, c.categoria FROM palabras_tecnicas pt " +
-                "INNER JOIN categorias c ON pt.idCategoria = c.idCategoria";
+        String query = "SELECT pt.palabra, c.categoria FROM palabras_tecnicas pt " + "INNER JOIN categorias c ON pt.idCategoria = c.idCategoria";
         ResultSet res = DATA_ACCESS.ejectuarRS(query);
 
         while (res.next()) {

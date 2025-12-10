@@ -76,11 +76,6 @@ public class GestorTicket {
         return db.obtenerTodos();
     }
 
-
-    public void eliminarPorCorreoDepartamento(String correoDepartamento) throws SQLException {
-        db.eliminar(correoDepartamento);
-    }
-
     public ArrayList<Ticket> obtenerTicketsPorUsuario(String correoUsuario) throws SQLException {
         ArrayList<Ticket> tickets = obtenerTickets();
         ArrayList<Ticket> filtrados = new ArrayList<>();

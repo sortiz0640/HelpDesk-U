@@ -55,10 +55,6 @@ public class GestorApp {
         return gestorUsuario.eliminarPorCorreo(correo);
     }
 
-    public String[] obtenerDetallesUsuario(String correoUsuario) throws SQLException {
-        return gestorUsuario.obtenerDetallesUsuario(correoUsuario);
-    }
-
     public ArrayList<String[]> obtenerTodosUsuariosFormato() throws SQLException {
         return gestorUsuario.obtenerTodosUsuariosFormato();
     }
@@ -72,18 +68,11 @@ public class GestorApp {
     }
 
     public String eliminarDepartamento(String correo) throws SQLException {
-        // Coordinación entre gestores: primero elimina tickets relacionados
-        gestorTicket.eliminarPorCorreoDepartamento(correo);
-        // Luego elimina el departamento
         return gestorDepartamento.eliminarPorCorreo(correo);
     }
 
     public ArrayList<String> obtenerDepartamentos() throws SQLException {
         return gestorDepartamento.obtenerCorreosDepartamentos();
-    }
-
-    public String[] obtenerDetallesDepartamento(String correoDepartamento) throws SQLException {
-        return gestorDepartamento.obtenerDetallesDepartamento(correoDepartamento);
     }
 
     public ArrayList<String[]> obtenerTodosDepartamentosFormato() throws SQLException {
@@ -137,16 +126,10 @@ public class GestorApp {
         return gestorTicket.actualizarEstado(ticketId, nuevoEstado);
     }
 
-    /**
-     * Obtiene las palabras detonantes técnicas de un ticket
-     */
     public ArrayList<String> obtenerPalabrasDetonantesTecnicas(String ticketId) throws SQLException {
         return gestorTicket.obtenerPalabrasDetonantes(ticketId, TipoCategoria.TECNICA);
     }
 
-    /**
-     * Obtiene las palabras detonantes emocionales de un ticket
-     */
     public ArrayList<String> obtenerPalabrasDetonantesEmocionales(String ticketId) throws SQLException {
         return gestorTicket.obtenerPalabrasDetonantes(ticketId, TipoCategoria.EMOCIONAL);
     }
