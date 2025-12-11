@@ -18,7 +18,6 @@ import java.util.ArrayList;
  * @version 2.0
  * @since 2025
  */
-
 public class GestorUsuario {
 
     private UsuarioDAO db;
@@ -26,8 +25,10 @@ public class GestorUsuario {
 
     /**
      * Constructor que inicializa el gestor y su capa de datos.
+     *
+     * @throws SQLException Si ocurre un error de conexión.
+     * @throws ClassNotFoundException Si no se encuentra el driver.
      */
-
     public GestorUsuario() throws SQLException, ClassNotFoundException {
         config = new ConfigPropertiesReader();
         db = new UsuarioDAO(
@@ -38,6 +39,18 @@ public class GestorUsuario {
         );
     }
 
+    /**
+     * Agrega un nuevo usuario validando el rol y existencia previa.
+     *
+     * @param nombre Nombre del usuario.
+     * @param apellidos Apellidos del usuario.
+     * @param correo Correo electrónico.
+     * @param password Contraseña.
+     * @param rolEntrada Entero que representa el rol (1: ADMIN, 2: ESTUDIANTE, 3: FUNCIONARIO).
+     * @return Mensaje informativo sobre el resultado de la operación.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     * @throws NoSuchAlgorithmException Si falla la encriptación de la contraseña.
+     */
     public String agregar(String nombre, String apellidos, String correo, String password, int rolEntrada) throws SQLException, NoSuchAlgorithmException {
         ListaRoles rol = switch (rolEntrada) {
             case 1 -> ListaRoles.ADMIN;
@@ -60,6 +73,13 @@ public class GestorUsuario {
         return "[INFO] Usuario agregado correctamente";
     }
 
+    /**
+     * Elimina un usuario existente por su correo electrónico.
+     *
+     * @param correo Correo del usuario a eliminar.
+     * @return Mensaje informativo sobre el resultado.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
     public String eliminarPorCorreo(String correo) throws SQLException {
         boolean resultado = db.eliminar(correo);
 
@@ -70,15 +90,34 @@ public class GestorUsuario {
         return "[INFO] Usuario eliminado correctamente";
     }
 
+    /**
+     * Busca un objeto Usuario completo por su correo.
+     *
+     * @param correo Correo del usuario a buscar.
+     * @return Objeto Usuario si existe, o null si no se encuentra.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
     public Usuario buscarPorCorreo(String correo) throws SQLException {
         return db.buscar(correo);
     }
 
-
+    /**
+     * Obtiene la lista completa de usuarios registrados.
+     *
+     * @return ArrayList con todos los objetos Usuario.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
     public ArrayList<Usuario> obtenerUsuarios() throws SQLException {
         return db.obtenerTodos();
     }
 
+    /**
+     * Obtiene los detalles básicos de un usuario en formato de arreglo de Strings.
+     *
+     * @param correoUsuario Correo del usuario.
+     * @return Arreglo con [Nombre, Apellidos, Correo, Rol], o null si no existe.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
     public String[] obtenerDetallesUsuario(String correoUsuario) throws SQLException {
         Usuario u = buscarPorCorreo(correoUsuario);
 
@@ -93,6 +132,13 @@ public class GestorUsuario {
                 u.getRol().toString(),
         };
     }
+
+    /**
+     * Obtiene todos los usuarios formateados para mostrar en tablas o interfaces.
+     *
+     * @return Lista de arreglos de String con los datos de cada usuario.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
 
     public ArrayList<String[]> obtenerTodosUsuariosFormato() throws SQLException {
         ArrayList<Usuario> usuarios = obtenerUsuarios();

@@ -2,6 +2,15 @@ package cr.ac.ucenfotec.sortiz0640.bl.analytics.logic;
 
 import java.util.ArrayList;
 
+/**
+ * Clase responsable de la preparación del texto de un ticket para su análisis.
+ * Realiza la limpieza, tokenización y eliminación de "stop words" (palabras comunes)
+ * para dejar solo las palabras clave relevantes.
+ *
+ * @author Sebastian Ortiz
+ * @version 1.0
+ * @since 2025
+ */
 public class FormateadorTexto {
 
     private String[] stopWords = {
@@ -10,8 +19,15 @@ public class FormateadorTexto {
             "para", "por", "se", "es", "son", "como", "muy"
     };
 
-    // Método principal que procesa el texto completo
-
+    /**
+     * Método principal que orquesta el proceso completo de procesamiento de texto.
+     * 1. Limpia caracteres especiales.
+     * 2. Divide en palabras (tokens).
+     * 3. Elimina "stop words".
+     *
+     * @param texto El texto completo a procesar (descripción del ticket).
+     * @return Un array de Strings con los tokens (palabras clave) filtrados y listos para clasificar.
+     */
     public String[] procesarTexto(String texto) {
         String textoLimpio = limpiarTexto(texto);
         String[] tokens = dividirEnPalabras(textoLimpio);
@@ -20,8 +36,13 @@ public class FormateadorTexto {
         return tokensFiltrados;
     }
 
-    // Limpia caracteres especiales y convierte a minúsculas
-
+    /**
+     * Limpia el texto, manteniendo solo letras y espacios, y convierte todo a minúsculas.
+     * Reemplaza cualquier otro caracter con un espacio.
+     *
+     * @param texto El texto original.
+     * @return Texto limpio y en minúsculas.
+     */
     private String limpiarTexto(String texto) {
         String textoLimpio = "";
 
@@ -29,7 +50,6 @@ public class FormateadorTexto {
             char caracter = texto.charAt(i);
 
             // Solo mantener letras y espacios
-
             if (Character.isLetter(caracter) || caracter == ' ') {
                 textoLimpio += Character.toLowerCase(caracter);
             } else {
@@ -40,8 +60,12 @@ public class FormateadorTexto {
         return textoLimpio.trim();
     }
 
-    // Divide el texto en palabras individuales
-
+    /**
+     * Divide el texto limpio en un array de palabras (tokens) separadas por espacios.
+     *
+     * @param texto Texto limpio (solo letras y espacios).
+     * @return Array de Strings con las palabras individuales.
+     */
     private String[] dividirEnPalabras(String texto) {
         ArrayList<String> palabras = new ArrayList<>();
         String palabraActual = "";
@@ -60,7 +84,6 @@ public class FormateadorTexto {
         }
 
         // Agregar la última palabra si existe
-
         if (palabraActual.length() > 0) {
             palabras.add(palabraActual);
         }
@@ -68,8 +91,12 @@ public class FormateadorTexto {
         return convertirListaAArray(palabras);
     }
 
-    // Elimina palabras comunes sin significado (stop words)
-
+    /**
+     * Elimina las palabras de la lista de `stopWords` y las palabras de 2 o menos caracteres.
+     *
+     * @param tokens Array de palabras.
+     * @return Array de palabras filtradas (tokens relevantes).
+     */
     private String[] eliminarStopWords(String[] tokens) {
         ArrayList<String> tokensFiltrados = new ArrayList<>();
 
@@ -94,8 +121,12 @@ public class FormateadorTexto {
         return convertirListaAArray(tokensFiltrados);
     }
 
-    // Convierte ArrayList a array normal
-
+    /**
+     * Método auxiliar para convertir un ArrayList<String> a un String[].
+     *
+     * @param lista La lista de strings.
+     * @return El array de strings resultante.
+     */
     private String[] convertirListaAArray(ArrayList<String> lista) {
         String[] array = new String[lista.size()];
 

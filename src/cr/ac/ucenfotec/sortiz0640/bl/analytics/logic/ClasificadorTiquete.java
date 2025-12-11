@@ -11,11 +11,26 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Clase responsable de clasificar los tokens de un ticket contra los diccionarios
+ * (palabras detonantes) de la base de datos para determinar la categoría
+ * de mayor frecuencia.
+ *
+ * @author Sebastian Ortiz
+ * @version 1.0
+ * @since 2025
+ */
 public class ClasificadorTiquete {
 
     private CategoriasDAO db;
     ConfigPropertiesReader config;
 
+    /**
+     * Constructor que inicializa la capa de acceso a datos para las categorías.
+     *
+     * @throws SQLException Si ocurre un error de conexión SQL.
+     * @throws ClassNotFoundException Si no se encuentra el driver de la BD.
+     */
     public ClasificadorTiquete() throws SQLException, ClassNotFoundException {
         config = new ConfigPropertiesReader();
         db = new CategoriasDAO(
@@ -26,6 +41,14 @@ public class ClasificadorTiquete {
         );
     }
 
+    /**
+     * Clasifica un conjunto de tokens (palabras limpias) con respecto a un diccionario
+     * de categorías (ej. técnicas o emocionales).
+     *
+     * @param tokens Array de palabras clave del ticket.
+     * @param diccionario HashMap donde la clave es el nombre de la categoría y el valor es la lista de palabras detonantes.
+     * @return HashMap resultado donde la clave es la categoría y el valor es la lista de tokens que pertenecen a esa categoría.
+     */
     public HashMap<String, ArrayList<String>> clasificar(String[] tokens, HashMap<String, ArrayList<String>> diccionario) {
 
         // Hashmap resultado
@@ -43,6 +66,13 @@ public class ClasificadorTiquete {
         return res;
     }
 
+    /**
+     * Busca un token específico dentro de las listas de palabras de todas las categorías del diccionario.
+     *
+     * @param token Palabra a buscar.
+     * @param diccionario Diccionario de categorías y palabras.
+     * @return El nombre de la categoría a la que pertenece el token, o null si no se encuentra.
+     */
     private String buscarCategoriaEnHashMap(String token, HashMap<String, ArrayList<String>> diccionario) {
         // Recorre todas las llaves (Categorias) del mapa una por una
         for (String key : diccionario.keySet()) {
@@ -54,6 +84,13 @@ public class ClasificadorTiquete {
         return null;
     }
 
+    /**
+     * Determina la CategoríaTicket de mayor frecuencia a partir del resultado de la clasificación.
+     * Elige la categoría que haya tenido más tokens asociados.
+     *
+     * @param res HashMap de categorías y tokens asociados.
+     * @return Objeto CategoriaTicket con el nombre de la categoría de mayor frecuencia y sus tokens.
+     */
     public CategoriaTicket getFrecuencia(HashMap<String, ArrayList<String>> res) {
 
         if (res == null || res.isEmpty()) {
@@ -84,12 +121,18 @@ public class ClasificadorTiquete {
         );
     }
 
-
+    /**
+     * Obtiene la categoría técnica dominante para un conjunto de tokens.
+     * Llama al DAO para obtener el diccionario técnico y luego determina la frecuencia.
+     *
+     * @param tokens Array de tokens limpios del ticket.
+     * @return CategoriaTicket con el resultado técnico.
+     */
     public CategoriaTicket getCategoriaTecnica(String[] tokens){
         CategoriaTicket categoriaTicket = null;
         try {
             categoriaTicket = getFrecuencia(
-                this.clasificar(tokens, db.obtenerCategoriasTecnicas())
+                    this.clasificar(tokens, db.obtenerCategoriasTecnicas())
             );
 
             categoriaTicket.setTipo(TipoCategoria.TECNICA);
@@ -102,11 +145,19 @@ public class ClasificadorTiquete {
         return categoriaTicket;
     }
 
+    /**
+     * Obtiene la categoría emocional dominante para un conjunto de tokens.
+     * Llama al DAO para obtener el diccionario emocional y luego determina la frecuencia.
+     *
+     * @param tokens Array de tokens limpios del ticket.
+     * @return CategoriaTicket con el resultado emocional.
+     */
+
     public CategoriaTicket getCategoriaEmocional(String[] tokens){
         CategoriaTicket categoriaTicket = null;
         try {
             categoriaTicket = getFrecuencia(
-                this.clasificar(tokens, db.obtenerCategoriasEmocionales())
+                    this.clasificar(tokens, db.obtenerCategoriasEmocionales())
             );
 
             categoriaTicket.setTipo(TipoCategoria.EMOCIONAL);

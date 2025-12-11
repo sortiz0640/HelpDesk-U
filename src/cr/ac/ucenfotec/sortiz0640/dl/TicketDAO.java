@@ -17,7 +17,8 @@ import java.util.ArrayList;
 
 /**
  * Implementación DAO para la entidad Ticket.
- * Gestiona todas las operaciones CRUD de tickets en la base de datos.
+ * Gestiona todas las operaciones CRUD de tickets en la base de datos,
+ * incluyendo las categorías y palabras detonantes asociadas.
  *
  * @author Sebastian Ortiz
  * @version 1.0
@@ -27,10 +28,28 @@ public class TicketDAO extends DataAccessObject<Ticket> {
 
     private AccessDB DATA_ACCESS;
 
+    /**
+     * Constructor que inicializa la conexión a la base de datos.
+     *
+     * @param driver Driver de la base de datos.
+     * @param url URL de conexión.
+     * @param username Nombre de usuario.
+     * @param password Contraseña.
+     * @throws SQLException Si ocurre un error de conexión SQL.
+     * @throws ClassNotFoundException Si no se encuentra el driver.
+     */
     public TicketDAO(String driver, String url, String username, String password) throws SQLException, ClassNotFoundException {
         this.DATA_ACCESS = Connector.getDataAccess(driver, url, username, password);
     }
 
+    /**
+     * Agrega un nuevo ticket a la base de datos, incluyendo su información básica
+     * y las palabras detonantes de las categorías técnica y emocional.
+     *
+     * @param ticket El objeto Ticket a agregar.
+     * @return true si el ticket se agregó, false si ya existía el ID.
+     * @throws SQLException Si ocurre un error al ejecutar las inserciones.
+     */
     @Override
     public boolean agregar(Ticket ticket) throws SQLException {
 
@@ -71,6 +90,13 @@ public class TicketDAO extends DataAccessObject<Ticket> {
         return true;
     }
 
+    /**
+     * Elimina un ticket de la base de datos por su ID.
+     *
+     * @param id ID del ticket a eliminar.
+     * @return true si el ticket fue eliminado, false si no existía.
+     * @throws SQLException Si ocurre un error al ejecutar la eliminación.
+     */
     @Override
     public boolean eliminar(String id) throws SQLException {
 
@@ -78,12 +104,23 @@ public class TicketDAO extends DataAccessObject<Ticket> {
             return false;
         }
 
+        // NOTA: Se asume que la tabla ticket_palabras_detonantes tiene FK ON DELETE CASCADE
+        // o que se maneja la eliminación de las palabras detonantes por separado (aunque no está aquí).
         String query = "DELETE FROM tiquetes WHERE id = '" + id + "'";
         DATA_ACCESS.ejecutar(query);
 
         return true;
 
     }
+
+    /**
+     * Busca y recupera un objeto Ticket por su ID, incluyendo la información de
+     * Usuario, Departamento y las palabras detonantes asociadas.
+     *
+     * @param id ID del ticket a buscar.
+     * @return El objeto Ticket completo si se encuentra, o null en caso contrario.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta.
+     */
     @Override
     public Ticket buscar(String id) throws SQLException {
 
@@ -174,6 +211,13 @@ public class TicketDAO extends DataAccessObject<Ticket> {
         return ticket;
     }
 
+    /**
+     * Obtiene una lista con todos los tickets registrados, realizando un join
+     * con la información de Usuario, Departamento y las palabras detonantes.
+     *
+     * @return ArrayList de objetos Ticket completos.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta.
+     */
     @Override
     public ArrayList<Ticket> obtenerTodos() throws SQLException {
 
@@ -285,6 +329,13 @@ public class TicketDAO extends DataAccessObject<Ticket> {
         return tickets;
     }
 
+    /**
+     * Verifica la existencia de un ticket por su ID.
+     *
+     * @param id ID del ticket a verificar.
+     * @return true si el ticket existe, false si no.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta.
+     */
     @Override
     public boolean existe(String id) throws SQLException {
         String query = "SELECT 1 FROM tiquetes WHERE id = '" + id + "'";
@@ -292,6 +343,14 @@ public class TicketDAO extends DataAccessObject<Ticket> {
         return res.next();
     }
 
+    /**
+     * Actualiza el campo de estado de un ticket específico.
+     *
+     * @param ticketId ID del ticket a actualizar.
+     * @param nuevoEstado El nuevo estado (e.g., EN_PROCESO, RESUELTO).
+     * @return true si el estado fue actualizado, false si el ticket no existe.
+     * @throws SQLException Si ocurre un error al ejecutar la actualización.
+     */
     public boolean actualizarEstado(String ticketId, EstadoTicket nuevoEstado) throws SQLException {
         if (!existe(ticketId)) {
             return false;
@@ -302,7 +361,15 @@ public class TicketDAO extends DataAccessObject<Ticket> {
         return true;
     }
 
-    // Método auxiliar para obtener palabras detonantes
+    /**
+     * Obtiene una lista de las palabras detonantes de un tipo de categoría específico
+     * asociadas a un ticket.
+     *
+     * @param ticketId ID del ticket.
+     * @param tipoCategoria Tipo de categoría a buscar (TECNICA o EMOCIONAL).
+     * @return Lista de Strings con las palabras detonantes.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta.
+     */
     public ArrayList<String> obtenerPalabrasDetonantes(String ticketId, TipoCategoria tipoCategoria) throws SQLException {
         ArrayList<String> palabras = new ArrayList<>();
         String query = "SELECT palabra FROM ticket_palabras_detonantes " + "WHERE ticketId = '" + ticketId + "' " +  "AND tipoCategoria = '" + tipoCategoria.toString() + "'";

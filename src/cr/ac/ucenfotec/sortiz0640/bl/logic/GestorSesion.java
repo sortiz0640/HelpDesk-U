@@ -3,10 +3,7 @@ package cr.ac.ucenfotec.sortiz0640.bl.logic;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import cr.ac.ucenfotec.sortiz0640.bl.entities.Usuario;
 import cr.ac.ucenfotec.sortiz0640.bl.util.ListaRoles;
-import cr.ac.ucenfotec.sortiz0640.bl.util.PasswordEncrypt;
-
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
